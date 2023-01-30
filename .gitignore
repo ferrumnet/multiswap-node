@@ -1,0 +1,25 @@
+# Dependencies
+node_modules
+
+# Ignore built ts files
+build/**/*
+
+# ingore redis database file
+*.rdb
+
+# ignore yarn.lock
+yarn.lock
+
+# yarn error logs
+yarn-error.log
+
+# Environment varibales
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env*.example
+
+# Code coverage
+coverage
