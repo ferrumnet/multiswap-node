@@ -4,6 +4,9 @@ node_modules
 # Ignore built ts files
 build/**/*
 
+# ingore redis database file
+*.rdb
+
 # ignore yarn.lock
 yarn.lock
 
