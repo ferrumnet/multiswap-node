@@ -1,20 +1,7 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import app from './app';
 import './worker';
 dotenv.config();
-
-mongoose.set('strictQuery', true);
-mongoose
-  .connect(process.env.MONGODB_URL as string)
-  .then(() => {
-    console.info('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error(
-      `MongoDB connection error. Please make sure MongoDB is running. ${err}`,
-    );
-  });
 
 const server = app.listen(process.env.PORT, () => {
   console.info(`Listening to port ${process.env.PORT}`);

@@ -9,3 +9,12 @@ export const createJob = async (req: Request, res: Response): Promise<any> => {
     console.error(err);
   }
 };
+
+export const getJob = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const job = await jobService.getJobById(req.params.id);
+    res.send(job);
+  } catch (err) {
+    console.error(err);
+  }
+};

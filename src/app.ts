@@ -14,7 +14,6 @@ app.use('/', routes);
 
 // send back a 404 error for any unknown api request
 app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(req.path);
   next(Error('Not found'));
 });
 
