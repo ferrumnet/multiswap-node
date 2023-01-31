@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import jobRoute from './jobRouter.route';
+import jobRoute from './job.route';
 
 const router = Router();
 
