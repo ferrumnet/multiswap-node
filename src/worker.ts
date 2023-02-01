@@ -5,6 +5,12 @@ const worker = new Worker(
   process.env.QUEUE as string,
   async job =>
     await web3Service.getTransactionReceipt(job.data.txId, job.data.rpcURL),
+  {
+    connection: {
+      host: process.env.REDIS_HOST as string,
+      port: Number(process.env.REDIS_PORT) as number,
+    },
+  },
 );
 worker.on('completed', async job => {
   console.info(`${job.id} has completed!`);
