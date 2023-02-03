@@ -1,11 +1,11 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { Transaction } from '../interfaces';
+import { UpdateJobRequestBody } from '../interfaces';
 dotenv.config();
 
 export const updateTransactionJobStatus = async (
   txHash: string,
-  body: Transaction,
+  body: UpdateJobRequestBody,
 ) => {
   const url = process.env.GATEWAY_BACKEND_URL;
   return axios.put(
