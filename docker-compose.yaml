@@ -1,0 +1,48 @@
+version: '3.8'
+# networks:
+#   app-network:
+#     driver: bridge
+
+services:
+  redis:
+    container_name: redis
+    image: 'redis:7.0.8'
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
+    restart:
+      on-failure
+    # networks:
+    #   - multiswap
+    expose:
+      - 6379
+  multiswap_app:
+    build:
+      context: ./
+      # target: development
+    container_name: multiswap_app
+    image: multiswap_app:latest
+    depends_on:
+      - redis
+    ports:
+      - 3000:3000
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    links:
+      - redis
+    restart:
+      on-failure
+#     networks:
+#       - multiswap
+
+# networks:
+#   multiswap:
+#     external:
+#       name: app
+volumes:
+  redis:
+    driver: local

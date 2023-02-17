@@ -32,7 +32,10 @@ worker.on('failed', async (job: any, err) => {
     job.data.txId,
     job.data.rpcURL,
   );
-  axiosService.updateTransactionJobStatus(tx.hash, tx);
+  axiosService.updateTransactionJobStatus(tx.hash, {
+    transaction: tx,
+    transactionReceipt: job?.returnvalue,
+  });
 });
 
 export default worker;
