@@ -13,12 +13,17 @@ const worker = new Worker(
   },
 );
 worker.on('completed', async job => {
-  console.info(`${job.id} has completed!`);
-  const tx = await web3Service.getTransactionByHash(
-    job.data.txId,
-    job.data.rpcURL,
-  );
-  axiosService.updateTransactionJobStatus(tx.hash, {transaction:tx, transactionReceipt: job?.returnvalue});
+  try {
+    console.info(`${job.id} has completed!`);
+    const tx = await web3Service.getTransactionByHash(
+      job.data.txId,
+      job.data.rpcURL,
+    );
+    const signedData = await web3Service.signedTransaction(job.data.rpcURL, tx);
+    axiosService.updateTransactionJobStatus(tx.hash, { signedData, tx });
+  } catch (error) {
+    console.error('error occured', error);
+  }
 });
 
 worker.on('failed', async (job: any, err) => {
@@ -27,7 +32,10 @@ worker.on('failed', async (job: any, err) => {
     job.data.txId,
     job.data.rpcURL,
   );
-  axiosService.updateTransactionJobStatus(tx.hash, {transaction:tx, transactionReceipt: job?.returnvalue});
+  axiosService.updateTransactionJobStatus(tx.hash, {
+    transaction: tx,
+    transactionReceipt: job?.returnvalue,
+  });
 });
 
 export default worker;
