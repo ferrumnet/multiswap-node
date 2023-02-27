@@ -37,13 +37,14 @@ export const signedTransaction = async (
       data: tx.input,
       value: tx.value,
     });
+    const sourceChainId = await web3.eth.getChainId();
     const txData = {
       transactionHash: tx.hash,
       from: tx.from,
       token: decodedInput.args[0],
       amount: decodedInput.args[1].toString(),
       contractAddress: tx.to,
-      chainId: web3.utils.hexToNumberString(tx.chainId.toString()),
+      chainId: web3.utils.hexToNumberString(sourceChainId),
       targetChainId: decodedInput.args[2].toString(),
       targetToken: decodedInput.args[3],
       targetAddress: decodedInput.args[4],
