@@ -20,7 +20,7 @@ worker.on('completed', async job => {
       job.data.rpcURL,
     );
     const signedData = await web3Service.signedTransaction(job.data.rpcURL, tx);
-    axiosService.updateTransactionJobStatus(tx.hash, { signedData, tx });
+    axiosService.updateTransactionJobStatus(tx.hash, { signedData, transaction: tx, transactionReceipt: job?.returnvalue },);
   } catch (error) {
     console.error('error occured', error);
   }
