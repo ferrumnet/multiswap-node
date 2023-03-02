@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
 import { NAME, VERSION } from '../constants/constants';
-import { ethers } from 'ethers';
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -27,27 +26,21 @@ export const getTransactionByHash = async (
 };
 
 export const signedTransaction = async (
-  rpcURL: string,
-  tx: any,
+  job: any,
+  decodedData: any,
 ): Promise<any> => {
   try {
-    const web3 = new Web3(rpcURL);
-    const inter = new ethers.utils.Interface(contractABI);
-    const decodedInput = inter.parseTransaction({
-      data: tx.input,
-      value: tx.value,
-    });
-    const sourceChainId = await web3.eth.getChainId();
+    const web3 = new Web3(job.data.rpcURL);
     const txData = {
-      transactionHash: tx.hash,
-      from: tx.from,
-      token: decodedInput.args[0],
-      amount: decodedInput.args[1].toString(),
-      contractAddress: tx.to,
-      chainId: web3.utils.hexToNumberString(sourceChainId),
-      targetChainId: decodedInput.args[2].toString(),
-      targetToken: decodedInput.args[3],
-      targetAddress: decodedInput.args[4],
+      transactionHash: job.returnvalue.transactionHash,
+      from: decodedData.sourceAddress,
+      token: decodedData.sourceToken,
+      amount: decodedData.sourceAmount,
+      contractAddress: job.returnvalue.to,
+      chainId: decodedData.sourceChainId,
+      targetChainId: decodedData.targetChainId,
+      targetToken: decodedData.targetToken,
+      targetAddress: decodedData.targetAddress,
       signatures: [],
       salt: '',
     };
@@ -151,4 +144,49 @@ const domainSeparator = (
       [typeHash, hashedName, hashedVersion, chainId, contractAddress],
     ),
   );
+};
+
+export const getLogsFromTransactionReceipt = (job: any) => {
+  let logDataAndTopic = undefined;
+
+  if (job?.returnvalue?.logs?.length) {
+    for (const log of job.returnvalue.logs) {
+      if (log?.topics?.length) {
+        const topicIndex = findSwapEvent(log.topics);
+        if (topicIndex !== undefined && topicIndex >= 0) {
+          logDataAndTopic = {
+            data: log.data,
+            topics: log.topics,
+          };
+          break;
+        }
+      }
+    }
+
+    const swapEventInputs = contractABI.find(
+      abi => abi.name === 'Swap' && abi.type === 'event',
+    )?.inputs;
+    if (logDataAndTopic?.data && logDataAndTopic.topics) {
+      const web3 = new Web3(job.data.rpcURL);
+
+      const decodedLog = web3.eth.abi.decodeLog(
+        swapEventInputs as any,
+        logDataAndTopic.data,
+        logDataAndTopic.topics.slice(1),
+      );
+
+      return decodedLog;
+    }
+  }
+};
+
+const findSwapEvent = (topics: any[]) => {
+  const swapEventHash = Web3.utils.sha3(
+    'Swap(address,address,uint256,uint256,uint256,address,address)',
+  );
+  if (topics?.length) {
+    return topics.findIndex(topic => topic === swapEventHash);
+  } else {
+    return undefined;
+  }
 };
