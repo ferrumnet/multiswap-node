@@ -5,7 +5,10 @@ import { abi as contractABI } from './constants/FiberRouter.json';
 const swapEventHash = Web3.utils.sha3(
   'Swap(address,address,uint256,uint256,uint256,address,address)',
 );
-console.log(swapEventHash, 'swapEventHash');
+const swapEventInputs = contractABI.find(
+  abi => abi.name === 'Swap' && abi.type === 'event',
+)?.inputs;
+
 const worker = new Worker(
   process.env.QUEUE as string,
   async job =>
@@ -46,29 +49,38 @@ worker.on('failed', async (job: any, err) => {
 });
 
 const getLogsFromTransactionReceipt = (job: any) => {
-  let topics: any[][] = [];
+  let logDataAndTopic = undefined;
+
   if (job?.returnvalue?.logs?.length) {
     for (const log of job.returnvalue.logs) {
-      topics = [...topics, getAllTopics(log)];
-    }
-  }
-  if (topics?.length) {
-    for (const topic of topics) {
-      const topicIndex = findSwapEvent(topic);
-      if (topicIndex !== undefined && topicIndex >= 0) {
-        // console.log(topic, topicIndex);
+      if (log?.topics?.length) {
+        const topicIndex = findSwapEvent(log.topics);
+        if (topicIndex !== undefined && topicIndex >= 0) {
+          logDataAndTopic = {
+            data: log.data,
+            topics: log.topics,
+          };
+          break;
+        }
       }
     }
-  }
-  console.log(topics);
-};
+    if (logDataAndTopic?.data && logDataAndTopic.topics) {
+      const web3 = new Web3(job.data.rpcURL);
 
-const getAllTopics = (log: any) => {
-  if (log?.topics?.length) {
-    return log.topics;
-  } else {
-    return [];
+      console.log(logDataAndTopic);
+      console.log(swapEventInputs);
+
+      const decodedLog = web3.eth.abi.decodeLog(
+        swapEventInputs as any,
+        logDataAndTopic.data,
+        logDataAndTopic.topics.slice(1),
+      );
+
+      console.log(decodedLog);
+    }
   }
+
+  // console.log(topics);
 };
 
 const findSwapEvent = (topics: any[]) => {
