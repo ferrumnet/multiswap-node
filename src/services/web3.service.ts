@@ -1,7 +1,8 @@
 import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
-import { NAME, VERSION } from '../constants/constants';
+import { NAME, VERSION, CONTRACT_ADDRESS } from '../constants/constants';
+import { ecsign, toRpcSig } from "ethereumjs-util";
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -36,7 +37,7 @@ export const signedTransaction = async (
       from: decodedData.sourceAddress,
       token: decodedData.sourceToken,
       amount: decodedData.sourceAmount,
-      contractAddress: job.returnvalue.to,
+      contractAddress: CONTRACT_ADDRESS,
       chainId: decodedData.sourceChainId,
       targetChainId: decodedData.targetChainId,
       targetToken: decodedData.targetToken,
@@ -82,10 +83,15 @@ const createSignedPayment = (
     salt,
   );
   const privateKey = process.env.PRIVATE_KEY as string;
-  const sign = web3.eth.accounts.sign(payBySig.hash, privateKey);
-  payBySig.signatures = [{ signature: sign.signature } as any];
+  const ecSign = ecsign(
+    Buffer.from(payBySig.hash.replace("0x", ""), "hex"),
+    Buffer.from(privateKey.replace("0x", ""), "hex")
+  );
+  const sign = fixSig(toRpcSig(ecSign.v, ecSign.r, ecSign.s));
+  payBySig.signatures = [sign];
   return payBySig;
 };
+
 const produceSignatureWithdrawHash = (
   web3: Web3,
   chainId: string,
@@ -190,3 +196,14 @@ const findSwapEvent = (topics: any[]) => {
     return undefined;
   }
 };
+
+const fixSig = (sig:any) => {
+  const rs = sig.substring(0, sig.length - 2);
+  let v = sig.substring(sig.length - 2);
+  if (v === '00' || v === '37' || v === '25') {
+    v = '1b'
+  } else if (v === '01' || v === '38' || v === '26') {
+    v = '1c'
+  }
+  return rs + v;
+}
