@@ -18,3 +18,11 @@ export const getJob = async (req: Request, res: Response): Promise<any> => {
     console.error(err);
   }
 };
+
+export const getHealth = async (req: Request, res: Response): Promise<any> => {
+  try {
+    res.send('');
+  } catch (err) {
+    console.error(err);
+  }
+};
