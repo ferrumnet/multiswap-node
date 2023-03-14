@@ -15,6 +15,10 @@ const worker = new Worker(
 worker.on('completed', async job => {
   try {
     console.info(`${job.id} has completed!`);
+    if(job && !job.returnvalue){
+      console.info(`Get latest receipt`);
+      job.returnvalue = await web3Service.getTransactionReceipt(job.data.txId, job.data.rpcURL);
+    }
     const decodedData = web3Service.getLogsFromTransactionReceipt(job);
     const tx = await web3Service.getTransactionByHash(
       job.data.txId,
