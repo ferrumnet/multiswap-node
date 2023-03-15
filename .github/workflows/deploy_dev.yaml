@@ -58,5 +58,5 @@ jobs:
       with:
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
-        container-image-name-updates: container=${{ env.CONTAINER_NAME}},tag=${{ github.sha }}
+        task-definition: container=${{ env.CONTAINER_NAME}},tag=${{ github.sha }}
         wait-for-service-stability: true
