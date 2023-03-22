@@ -3,6 +3,7 @@ import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
 import { NAME, VERSION, CONTRACT_ADDRESS } from '../constants/constants';
 import { ecsign, toRpcSig } from "ethereumjs-util";
+import { AbiItem } from 'web3-utils'
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -30,15 +31,17 @@ export const getTransactionByHash = async (
 export const signedTransaction = async (
   job: any,
   decodedData: any,
+  transaction: any
 ): Promise<any> => {
   try {
     const web3 = new Web3(job.data.rpcURL);
     const txData = {
       transactionHash: job.returnvalue.transactionHash,
-      from: decodedData.sourceAddress,
+      from: transaction.from,
       token: decodedData.sourceToken,
       amount: decodedData.sourceAmount,
-      contractAddress: CONTRACT_ADDRESS,
+      contractAddress: await getFundManagerAddress(web3, transaction),
+      fiberRouterAddress: transaction.to,
       chainId: decodedData.sourceChainId,
       targetChainId: decodedData.targetChainId,
       targetToken: decodedData.targetToken,
@@ -47,19 +50,34 @@ export const signedTransaction = async (
       salt: '',
     };
 
-    txData.salt = Web3.utils.keccak256(
-      txData.transactionHash.toLocaleLowerCase(),
-    );
-    const payBySig = createSignedPayment(
-      txData.chainId,
-      txData.from,
-      txData.amount,
-      txData.token,
+    // txData.salt = Web3.utils.keccak256(
+    //   txData.transactionHash.toLocaleLowerCase(),
+    // );
+    txData.salt = txData.transactionHash;
+    console.log('txData',txData);
+    const payBySig0 = createSignedPayment(
+      txData.targetChainId,
+      txData.targetAddress,
+      '10000000000000000',
+      txData.targetToken,
       txData.contractAddress,
       txData.salt,
       web3,
     );
-    return { ...txData, signatures: payBySig.signatures, hash: payBySig.hash };
+
+    const payBySig1 = createSignedPayment(
+      txData.targetChainId,
+      txData.fiberRouterAddress,
+      txData.amount,
+      txData.targetToken,
+      txData.contractAddress,
+      txData.salt,
+      web3,
+    );
+    return {
+      ...txData, signatures: [payBySig0.signatures, payBySig1.signatures],
+      hash: payBySig0.hash
+    };
   } catch (error) {
     console.error('Error occured while decoding transaction', error);
   }
@@ -207,4 +225,15 @@ const fixSig = (sig:any) => {
     v = '1c'
   }
   return rs + v;
+}
+
+const getFundManagerAddress = async (web3: Web3, transaction: any) => {
+  const fiberRouter = new web3.eth.Contract(
+    contractABI as AbiItem[],
+    transaction.to
+  );
+  const fundManagerAddress = await fiberRouter.methods.pool().call();
+  console.log('fundManagerAddress',fundManagerAddress);
+  // return '0xF87d78C41D01660082DE1A4aC3CAc3dd211CaCCf'; // for fantom
+  return '0x9aFe354fb34a6303a9b9C89fF43A509A5320ba2D'; // for bsc
 }

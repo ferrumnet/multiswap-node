@@ -24,7 +24,7 @@ worker.on('completed', async job => {
       job.data.txId,
       job.data.rpcURL,
     );
-    const signedData = await web3Service.signedTransaction(job, decodedData);
+    const signedData = await web3Service.signedTransaction(job, decodedData, tx);
     axiosService.updateTransactionJobStatus(tx.hash, {
       signedData,
       transaction: tx,
