@@ -2,7 +2,8 @@ import { Transaction, TransactionReceipt } from '../interfaces';
 
 export interface JobRequestBody {
   name: string;
-  rpcURL: string;
+  sourceRpcURL: string;
+  destinationRpcURL: string;
   txId: string;
 }
 

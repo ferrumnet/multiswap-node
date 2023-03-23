@@ -1,9 +1,10 @@
 import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
-import { NAME, VERSION, CONTRACT_ADDRESS } from '../constants/constants';
+import { NAME, VERSION, NETWORKS } from '../constants/constants';
 import { ecsign, toRpcSig } from "ethereumjs-util";
 import { AbiItem } from 'web3-utils'
+import { amountToHuman, amountToMachine } from '../constants/utils';
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -34,13 +35,23 @@ export const signedTransaction = async (
   transaction: any
 ): Promise<any> => {
   try {
-    const web3 = new Web3(job.data.rpcURL);
+    const web3 = new Web3(job.data.sourceRpcURL);
+    const sourceAmountToHuman = await amountToHuman(
+      web3,
+      decodedData.sourceToken,
+      decodedData.sourceAmount
+    );
+    const sourceAmountToMachine = await amountToMachine(
+      new Web3(job.data.destinationRpcURL),
+      decodedData.targetToken,
+      sourceAmountToHuman
+    );
     const txData = {
       transactionHash: job.returnvalue.transactionHash,
       from: transaction.from,
       token: decodedData.sourceToken,
       amount: decodedData.sourceAmount,
-      contractAddress: await getFundManagerAddress(web3, transaction),
+      contractAddress: getFundManagerAddress(decodedData.targetChainId),
       fiberRouterAddress: transaction.to,
       chainId: decodedData.sourceChainId,
       targetChainId: decodedData.targetChainId,
@@ -50,15 +61,13 @@ export const signedTransaction = async (
       salt: '',
     };
 
-    // txData.salt = Web3.utils.keccak256(
-    //   txData.transactionHash.toLocaleLowerCase(),
-    // );
-    txData.salt = txData.transactionHash;
-    console.log('txData',txData);
+    txData.salt = Web3.utils.keccak256(
+      txData.transactionHash.toLocaleLowerCase(),
+    );
     const payBySig0 = createSignedPayment(
       txData.targetChainId,
       txData.targetAddress,
-      '10000000000000000',
+      sourceAmountToMachine,
       txData.targetToken,
       txData.contractAddress,
       txData.salt,
@@ -68,7 +77,7 @@ export const signedTransaction = async (
     const payBySig1 = createSignedPayment(
       txData.targetChainId,
       txData.fiberRouterAddress,
-      txData.amount,
+      sourceAmountToMachine,
       txData.targetToken,
       txData.contractAddress,
       txData.salt,
@@ -192,7 +201,7 @@ export const getLogsFromTransactionReceipt = (job: any) => {
       abi => abi.name === 'Swap' && abi.type === 'event',
     )?.inputs;
     if (logDataAndTopic?.data && logDataAndTopic.topics) {
-      const web3 = new Web3(job.data.rpcURL);
+      const web3 = new Web3(job.data.sourceRpcURL);
 
       const decodedLog = web3.eth.abi.decodeLog(
         swapEventInputs as any,
@@ -227,13 +236,12 @@ const fixSig = (sig:any) => {
   return rs + v;
 }
 
-const getFundManagerAddress = async (web3: Web3, transaction: any) => {
-  const fiberRouter = new web3.eth.Contract(
-    contractABI as AbiItem[],
-    transaction.to
-  );
-  const fundManagerAddress = await fiberRouter.methods.pool().call();
-  console.log('fundManagerAddress',fundManagerAddress);
-  // return '0xF87d78C41D01660082DE1A4aC3CAc3dd211CaCCf'; // for fantom
-  return '0x9aFe354fb34a6303a9b9C89fF43A509A5320ba2D'; // for bsc
+const getFundManagerAddress = (chainId: string) => {
+  if (NETWORKS && NETWORKS.length > 0) {
+    let item = NETWORKS.find((item: any) => item.chainId === chainId);
+    return item ? item.fundManagerAddress : '';
+  }
+  return '';
 }
+
+
