@@ -52,7 +52,7 @@ export const signedTransaction = async (
       token: decodedData.sourceToken,
       amount: decodedData.sourceAmount,
       contractAddress: getFundManagerAddress(decodedData.targetChainId),
-      fiberRouterAddress: transaction.to,
+      fiberRouterAddress: getFiberRouterAddress(decodedData.targetChainId),
       chainId: decodedData.sourceChainId,
       targetChainId: decodedData.targetChainId,
       targetToken: decodedData.targetToken,
@@ -240,6 +240,14 @@ const getFundManagerAddress = (chainId: string) => {
   if (NETWORKS && NETWORKS.length > 0) {
     let item = NETWORKS.find((item: any) => item.chainId === chainId);
     return item ? item.fundManagerAddress : '';
+  }
+  return '';
+}
+
+const getFiberRouterAddress = (chainId: string) => {
+  if (NETWORKS && NETWORKS.length > 0) {
+    let item = NETWORKS.find((item: any) => item.chainId === chainId);
+    return item ? item.fiberRouterAddress : '';
   }
   return '';
 }
