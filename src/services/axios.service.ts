@@ -1,7 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 var CryptoJS = require("crypto-js");
-import { BEARER } from '../constants/constants';
+import { BEARER, RANDOM_KEY } from '../constants/constants';
 dotenv.config();
 
 export const updateTransactionJobStatus = async (txHash: string, body: any) => {
@@ -25,7 +25,7 @@ const getGatewayBackendToken = () => {
 const doEncryption = () => {
   try {
     const privateKey = process.env.PRIVATE_KEY as string;
-    const publicKey = process.env.PUBLIC_KEY as string;
+    const publicKey = process.env.PUBLIC_KEY ? process.env.PUBLIC_KEY : RANDOM_KEY;
     var ciphertext = CryptoJS.AES.encrypt(publicKey, privateKey);
     return ciphertext;
   } catch (e) {
