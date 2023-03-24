@@ -36,16 +36,7 @@ export const signedTransaction = async (
 ): Promise<any> => {
   try {
     const web3 = new Web3(job.data.sourceRpcURL);
-    const sourceAmountToHuman = await amountToHuman(
-      web3,
-      decodedData.sourceToken,
-      decodedData.sourceAmount
-    );
-    const sourceAmountToMachine = await amountToMachine(
-      new Web3(job.data.destinationRpcURL),
-      decodedData.targetToken,
-      sourceAmountToHuman
-    );
+    const destinationAmountToMachine = await getDestinationAmount(job.data);
     const txData = {
       transactionHash: job.returnvalue.transactionHash,
       from: transaction.from,
@@ -67,7 +58,7 @@ export const signedTransaction = async (
     const payBySig0 = createSignedPayment(
       txData.targetChainId,
       txData.targetAddress,
-      sourceAmountToMachine,
+      destinationAmountToMachine,
       txData.targetToken,
       txData.contractAddress,
       txData.salt,
@@ -77,7 +68,7 @@ export const signedTransaction = async (
     const payBySig1 = createSignedPayment(
       txData.targetChainId,
       txData.fiberRouterAddress,
-      sourceAmountToMachine,
+      destinationAmountToMachine,
       txData.targetToken,
       txData.contractAddress,
       txData.salt,
@@ -250,6 +241,10 @@ const getFiberRouterAddress = (chainId: string) => {
     return item ? item.fiberRouterAddress : '';
   }
   return '';
+}
+
+const getDestinationAmount = async (data: any) => {
+  return data.bridgeAmount;
 }
 
 
