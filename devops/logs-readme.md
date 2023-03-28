@@ -9,10 +9,11 @@ https://docs.aws.amazon.com/cli/latest/userguide/sso-configure-profile-token.htm
 
 
 # View AWS service logs
-aws logs tail --follow --region us-east-2 <log_group_name>
+aws logs tail --follow --region us-east-2 <log_group_name>  --since  <time>
 
 example:
+for past 5 minutes logs 
 
-aws logs tail --follow --region us-east-2 /ferrum/ecs/multiswap-node
+aws logs tail --follow --region us-east-2 /ferrum/ecs/multiswap-node  --since 5m
 
 
