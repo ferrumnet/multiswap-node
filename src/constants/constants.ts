@@ -13,5 +13,15 @@ export const NETWORKS = [
         chainId: '250',
         fundManagerAddress: '0x354CBFc2894d45a584a9Fd0223cf58495cE3cF7F',
         fiberRouterAddress: '0xAA209557B51C28a8D050fB500e67498EB3d1d92b'
+    },
+    {
+        chainId: '137',
+        fundManagerAddress: '0x80AEE9cdD324c0B0F740ae00992D646bA9d32144',
+        fiberRouterAddress: '0x148D948B29782C23F4B5118c70dCE92Dcf7258B8'
+    },
+    {
+        chainId: '42161',
+        fundManagerAddress: '0xcfddF60db000D49d0F2dafd7eDB08Fca177F1A1E',
+        fiberRouterAddress: '0x0d618f4632C135e05d9fD795bab021e7DD3187c4'
     }
 ];
