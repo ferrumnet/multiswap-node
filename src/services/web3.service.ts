@@ -244,6 +244,7 @@ const getFiberRouterAddress = (chainId: string) => {
 }
 
 const getDestinationAmount = async (data: any) => {
+  console.log('data.bridgeAmount',data.bridgeAmount)
   return data.bridgeAmount;
 }
 
