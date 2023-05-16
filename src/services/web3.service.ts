@@ -2,8 +2,8 @@ import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
 import { NAME, VERSION, NETWORKS } from '../constants/constants';
-import { ecsign, toRpcSig } from "ethereumjs-util";
-import { AbiItem } from 'web3-utils'
+import { ecsign, toRpcSig } from 'ethereumjs-util';
+import { AbiItem } from 'web3-utils';
 import { amountToHuman, amountToMachine } from '../constants/utils';
 
 export const getTransactionReceipt = async (
@@ -14,7 +14,7 @@ export const getTransactionReceipt = async (
   const transaction: TransactionReceipt = await web3.eth.getTransactionReceipt(
     txId,
   );
-  console.log('transaction',transaction)
+  // console.log('transaction',transaction)
   if (!transaction || transaction === null || transaction.status === null) {
     await getTransactionReceipt(txId, rpcURL);
   }
@@ -32,7 +32,7 @@ export const getTransactionByHash = async (
 export const signedTransaction = async (
   job: any,
   decodedData: any,
-  transaction: any
+  transaction: any,
 ): Promise<any> => {
   try {
     const web3 = new Web3(job.data.sourceRpcURL);
@@ -75,8 +75,9 @@ export const signedTransaction = async (
       web3,
     );
     return {
-      ...txData, signatures: [payBySig0.signatures, payBySig1.signatures],
-      hash: payBySig0.hash
+      ...txData,
+      signatures: [payBySig0.signatures, payBySig1.signatures],
+      hash: payBySig0.hash,
     };
   } catch (error) {
     console.error('Error occured while decoding transaction', error);
@@ -103,8 +104,8 @@ const createSignedPayment = (
   );
   const privateKey = process.env.PRIVATE_KEY as string;
   const ecSign = ecsign(
-    Buffer.from(payBySig.hash.replace("0x", ""), "hex"),
-    Buffer.from(privateKey.replace("0x", ""), "hex")
+    Buffer.from(payBySig.hash.replace('0x', ''), 'hex'),
+    Buffer.from(privateKey.replace('0x', ''), 'hex'),
   );
   const sign = fixSig(toRpcSig(ecSign.v, ecSign.r, ecSign.s));
   payBySig.signatures = [sign];
@@ -177,7 +178,7 @@ export const getLogsFromTransactionReceipt = (job: any) => {
   if (job?.returnvalue?.logs?.length) {
     for (const log of job.returnvalue.logs) {
       if (log?.topics?.length) {
-        const topicIndex = findSwapEvent(log.topics);
+        const topicIndex = findSwapEvent(log.topics, job);
         if (topicIndex !== undefined && topicIndex >= 0) {
           logDataAndTopic = {
             data: log.data,
@@ -188,9 +189,16 @@ export const getLogsFromTransactionReceipt = (job: any) => {
       }
     }
 
-    const swapEventInputs = contractABI.find(
+    let swapEventInputs = contractABI.find(
       abi => abi.name === 'Swap' && abi.type === 'event',
     )?.inputs;
+
+    if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
+      swapEventInputs = contractABI.find(
+        abi => abi.name === 'NonEvmSwap' && abi.type === 'event',
+      )?.inputs;
+    }
+
     if (logDataAndTopic?.data && logDataAndTopic.topics) {
       const web3 = new Web3(job.data.sourceRpcURL);
 
@@ -205,10 +213,16 @@ export const getLogsFromTransactionReceipt = (job: any) => {
   }
 };
 
-const findSwapEvent = (topics: any[]) => {
-  const swapEventHash = Web3.utils.sha3(
+const findSwapEvent = (topics: any[], job: any) => {
+  let swapEventHash = Web3.utils.sha3(
     'Swap(address,address,uint256,uint256,uint256,address,address)',
   );
+  if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
+    swapEventHash = Web3.utils.sha3(
+      'NonEvmSwap(address,string,uint256,string,uint256,address,string)',
+    );
+  }
+
   if (topics?.length) {
     return topics.findIndex(topic => topic === swapEventHash);
   } else {
@@ -216,16 +230,16 @@ const findSwapEvent = (topics: any[]) => {
   }
 };
 
-const fixSig = (sig:any) => {
+const fixSig = (sig: any) => {
   const rs = sig.substring(0, sig.length - 2);
   let v = sig.substring(sig.length - 2);
   if (v === '00' || v === '37' || v === '25') {
-    v = '1b'
+    v = '1b';
   } else if (v === '01' || v === '38' || v === '26') {
-    v = '1c'
+    v = '1c';
   }
   return rs + v;
-}
+};
 
 const getFundManagerAddress = (chainId: string) => {
   if (NETWORKS && NETWORKS.length > 0) {
@@ -233,7 +247,7 @@ const getFundManagerAddress = (chainId: string) => {
     return item ? item.fundManagerAddress : '';
   }
   return '';
-}
+};
 
 const getFiberRouterAddress = (chainId: string) => {
   if (NETWORKS && NETWORKS.length > 0) {
@@ -241,11 +255,9 @@ const getFiberRouterAddress = (chainId: string) => {
     return item ? item.fiberRouterAddress : '';
   }
   return '';
-}
+};
 
 const getDestinationAmount = async (data: any) => {
-  console.log('data.bridgeAmount',data.bridgeAmount)
+  console.log('data.bridgeAmount', data.bridgeAmount);
   return data.bridgeAmount;
-}
-
-
+};
