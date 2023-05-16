@@ -104,13 +104,16 @@ export const getLogsFromTransactionReceipt = (job: any) => {
     let decodedData: any = {};
     job.returnvalue.transactionHash = job?.returnvalue?.hash;
     job.returnvalue.status = false;
-    if (job?.returnvalue?.code && job?.returnvalue?.code == 0) {
+    if (job?.returnvalue?.code == 0) {
       job.returnvalue.status = true;
     }
     let rawLogs = job?.returnvalue?.rawLog;
     var logs = JSON.parse(rawLogs);
     decodedData.sourceToken = filterLogsAndGetValue(logs, 'token');
     decodedData.sourceAmount = filterLogsAndGetValue(logs, 'amount');
+    if (decodedData.sourceAmount) {
+      decodedData.sourceAmount = decodedData.sourceAmount.replace('acudos', '');
+    }
     decodedData.sourceChainId = CUDOS_CHAIN_ID;
     decodedData.targetChainId = filterLogsAndGetValue(logs, 'target_chain_id');
     decodedData.targetToken = filterLogsAndGetValue(logs, 'target_token');
