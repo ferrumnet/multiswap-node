@@ -36,9 +36,9 @@ worker.on('completed', async job => {
         job.data.txId,
         job.data.sourceRpcURL,
       );
-      // this needs to change
       decodedData = cosmWasmService.getLogsFromTransactionReceipt(job);
       tx.from = decodedData.from;
+      tx.hash = job.returnvalue.transactionHash;
     } else {
       if (job && !job.returnvalue) {
         console.info(`Get latest receipt`);
@@ -65,12 +65,12 @@ worker.on('completed', async job => {
       signedData = await web3Service.signedTransaction(job, decodedData, tx);
     }
 
-    console.log('signedData', signedData);
-    // axiosService.updateTransactionJobStatus(tx.hash, {
-    //   signedData,
-    //   transaction: tx,
-    //   transactionReceipt: job?.returnvalue,
-    // });
+    console.log('signedData', job.returnvalue.status, signedData);
+    axiosService.updateTransactionJobStatus(tx.hash, {
+      signedData,
+      transaction: tx,
+      transactionReceipt: job?.returnvalue,
+    });
   } catch (error) {
     console.error('error occured', error);
   }
