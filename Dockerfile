@@ -5,6 +5,8 @@ WORKDIR /app
 COPY . /app
 
 RUN mv .env.example .env
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 RUN yarn install 
 
 EXPOSE 3000
