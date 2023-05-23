@@ -1,7 +1,12 @@
 import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { abi as contractABI } from '../constants/FiberRouter.json';
-import { NAME, VERSION, NETWORKS } from '../constants/constants';
+import {
+  NAME,
+  VERSION,
+  NETWORKS,
+  CUDOS_CHAIN_ID,
+} from '../constants/constants';
 import { ecsign, toRpcSig } from 'ethereumjs-util';
 import { AbiItem } from 'web3-utils';
 import { amountToHuman, amountToMachine } from '../constants/utils';
@@ -46,7 +51,11 @@ export const signedTransaction = async (
       fiberRouterAddress: getFiberRouterAddress(decodedData.targetChainId),
       chainId: decodedData.sourceChainId,
       targetChainId: decodedData.targetChainId,
-      targetToken: decodedData.targetToken,
+      targetToken: getFoundaryTokenAddress(
+        decodedData.sourceChainId,
+        decodedData.targetChainId,
+        decodedData.targetToken,
+      ),
       targetAddress: decodedData.targetAddress,
       signatures: [],
       salt: '',
@@ -255,6 +264,22 @@ const getFiberRouterAddress = (chainId: string) => {
     return item ? item.fiberRouterAddress : '';
   }
   return '';
+};
+
+const getFoundaryTokenAddress = (
+  sourceChainId: string,
+  targetChainId: string,
+  targetAddress: string,
+) => {
+  if (sourceChainId == CUDOS_CHAIN_ID) {
+    if (NETWORKS && NETWORKS.length > 0) {
+      let item = NETWORKS.find((item: any) => item.chainId === targetChainId);
+      return item ? item.foundaryTokenAddress : '';
+    }
+    return '';
+  } else {
+    return targetAddress;
+  }
 };
 
 const getDestinationAmount = async (data: any) => {
