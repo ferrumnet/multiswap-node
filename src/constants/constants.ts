@@ -30,4 +30,10 @@ export const NETWORKS = [
     fiberRouterAddress: '0x0d618f4632C135e05d9fD795bab021e7DD3187c4',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
+  {
+    chainId: '43114',
+    fundManagerAddress: '0xe03Ee84bf90e471AD4e168F7A55BDB0cbc813BDa',
+    fiberRouterAddress: '0x5147FE2C4C5221d635E858a32734B4F2840B6B38',
+    foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+  },
 ];
