@@ -36,7 +36,6 @@ export const NETWORKS = [
     fiberRouterAddress: '0x066599eD3abB7Eaf517119d376254af13871e5B1',
     foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
   },
-  ,
   {
     chainId: '245022934',
     fundManagerAddress: '0xE6ff690CC7B91A2B626F7A76Fe507028bc1Eb12D',
