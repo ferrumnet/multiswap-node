@@ -19,7 +19,7 @@ export const getTransactionReceipt = async (
   const transaction: TransactionReceipt = await web3.eth.getTransactionReceipt(
     txId,
   );
-  // console.log('transaction',transaction)
+  console.log('transaction', transaction);
   if (!transaction || transaction === null || transaction.status === null) {
     await getTransactionReceipt(txId, rpcURL);
   }
