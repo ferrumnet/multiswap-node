@@ -23,6 +23,7 @@ export const getTransactionReceipt = async (
   );
   console.log('transaction', transaction?.status, txId, tries);
   if (tries < THRESHOLD) {
+    tries += 1;
     if (!transaction || transaction === null || transaction.status === null) {
       await getTransactionReceipt(txId, rpcURL, tries);
     }
