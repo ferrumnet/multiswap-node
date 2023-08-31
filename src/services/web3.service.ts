@@ -6,6 +6,7 @@ import {
   VERSION,
   NETWORKS,
   CUDOS_CHAIN_ID,
+  THRESHOLD,
 } from '../constants/constants';
 import { ecsign, toRpcSig } from 'ethereumjs-util';
 import { AbiItem } from 'web3-utils';
@@ -14,14 +15,17 @@ import { amountToHuman, amountToMachine } from '../constants/utils';
 export const getTransactionReceipt = async (
   txId: string,
   rpcURL: string,
+  tries = 0,
 ): Promise<TransactionReceipt> => {
   const web3 = new Web3(rpcURL);
   const transaction: TransactionReceipt = await web3.eth.getTransactionReceipt(
     txId,
   );
-  console.log('transaction', transaction);
-  if (!transaction || transaction === null || transaction.status === null) {
-    await getTransactionReceipt(txId, rpcURL);
+  console.log('transaction', transaction?.status, txId, tries);
+  if (tries < THRESHOLD) {
+    if (!transaction || transaction === null || transaction.status === null) {
+      await getTransactionReceipt(txId, rpcURL, tries);
+    }
   }
   return transaction;
 };
