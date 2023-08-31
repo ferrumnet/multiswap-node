@@ -5,6 +5,7 @@ export const BEARER = 'Bearer ';
 export const RANDOM_KEY =
   'AnanlJwzC/5MKcsT5nMr25zLrXIBx13byMYNKcXDp0ppI4Dn5YTQtU2WNp9PAKGi';
 export const CUDOS_CHAIN_ID = 'cudos-1';
+export const THRESHOLD = 360;
 export const NETWORKS = [
   {
     chainId: '56',
