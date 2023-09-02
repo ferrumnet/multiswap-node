@@ -9,8 +9,8 @@ export const THRESHOLD = 360;
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0x3A508088Ad506184E6D0207C4705803d9D4F1263',
-    fiberRouterAddress: '0x3b0d843c49220308512B3068A6211022C08585a8',
+    fundManagerAddress: '0x00656E8fccF62aDb64e07A6bd0a967d97CaA0271',
+    fiberRouterAddress: '0x7721658936bf9A3c32286127C7Bd1927aa84b11E',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
