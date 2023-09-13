@@ -26,6 +26,26 @@ const worker = new Worker(
   },
 );
 worker.on('completed', async job => {
+  await workerOnCompleted(job);
+});
+
+worker.on('failed', async (job: any, err) => {
+  console.info(`${job.id} has failed with ${err.message}`);
+  const tx = await web3Service.getTransactionByHash(
+    job.data.txId,
+    job.data.sourceRpcURL,
+  );
+  axiosService.updateTransactionJobStatus(
+    tx.hash,
+    {
+      transaction: tx,
+      transactionReceipt: job?.returnvalue,
+    },
+    'master',
+  );
+});
+
+export async function workerOnCompleted(job: any) {
   try {
     let decodedData;
     let tx: any = {};
@@ -66,26 +86,18 @@ worker.on('completed', async job => {
     }
 
     console.log('signedData', job.returnvalue.status, signedData);
-    axiosService.updateTransactionJobStatus(tx.hash, {
-      signedData,
-      transaction: tx,
-      transactionReceipt: job?.returnvalue,
-    });
+    axiosService.updateTransactionJobStatus(
+      tx.hash,
+      {
+        signedData,
+        transaction: tx,
+        transactionReceipt: job?.returnvalue,
+      },
+      'master',
+    );
   } catch (error) {
     console.error('error occured', error);
   }
-});
-
-worker.on('failed', async (job: any, err) => {
-  console.info(`${job.id} has failed with ${err.message}`);
-  const tx = await web3Service.getTransactionByHash(
-    job.data.txId,
-    job.data.sourceRpcURL,
-  );
-  axiosService.updateTransactionJobStatus(tx.hash, {
-    transaction: tx,
-    transactionReceipt: job?.returnvalue,
-  });
-});
+}
 
 export default worker;
