@@ -8,8 +8,17 @@ import {
   CUDOS_CHAIN_ID,
   THRESHOLD,
 } from '../constants/constants';
-import { ecsign, toRpcSig } from 'ethereumjs-util';
 import { AbiItem } from 'web3-utils';
+import {
+  ecsign,
+  toRpcSig,
+  keccak,
+  fromRpcSig,
+  ecrecover,
+  toBuffer,
+  pubToAddress,
+  bufferToHex,
+} from 'ethereumjs-util';
 import { amountToHuman, amountToMachine } from '../constants/utils';
 
 export const getTransactionReceipt = async (
@@ -290,4 +299,47 @@ const getFoundaryTokenAddress = (
 const getDestinationAmount = async (data: any) => {
   console.log('data.bridgeAmount', data.bridgeAmount);
   return data.bridgeAmount;
+};
+
+export const validateSignature = (job: any) => {
+  let isValid = true;
+  try {
+    let signatures = job?.transaction?.generatorSig?.signatures;
+    if (signatures?.length > 0) {
+      for (let index = 0; index < signatures.length; index++) {
+        let signature = signatures[index];
+        let sig = signature?.signature;
+        let hash = signature?.hash;
+        let address = signature?.address;
+        if (isRecoverAddressValid(sig, hash, address) == false) {
+          isValid = false;
+        }
+      }
+    } else {
+      isValid = false;
+    }
+  } catch (e) {
+    isValid = false;
+  }
+  return isValid;
+};
+
+export const isRecoverAddressValid = (
+  signature: string,
+  hash: string,
+  publicAddress: string,
+): boolean => {
+  try {
+    const { v, r, s } = fromRpcSig(signature);
+    const pubKey = ecrecover(toBuffer(hash), v, r, s);
+    const addrBuf = pubToAddress(pubKey);
+    const address = bufferToHex(addrBuf);
+    console.log('public address is:::', address);
+    if (address.toLowerCase() == publicAddress.toLowerCase()) {
+      return true;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
 };
