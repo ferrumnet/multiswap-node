@@ -4,6 +4,7 @@ const { SigningCosmWasmClient } = require('@cosmjs/cosmwasm-stargate');
 import { Wallet, ethers } from 'ethers';
 // import ethers from 'ethers';
 import { CUDOS_CHAIN_ID } from '../constants/constants';
+import { recoverPersonalSignature } from 'eth-sig-util';
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -143,4 +144,49 @@ export const filterLogsAndGetValue = (logs: any, key: string) => {
 const getDestinationAmount = async (data: any) => {
   console.log('data.bridgeAmount', data.bridgeAmount);
   return data.bridgeAmount;
+};
+
+export const validateSignature = (job: any) => {
+  let isValid = true;
+  try {
+    let signatures = job?.transaction?.validatorSig?.signatures;
+    if (signatures?.length > 0) {
+      for (let index = 0; index < signatures.length; index++) {
+        let signature = signatures[index];
+        let sig = signature?.signature;
+        let hash = signature?.hash;
+        let address = signature?.address;
+        if (isRecoverAddressValid(sig, hash, address) == false) {
+          isValid = false;
+        }
+      }
+    } else {
+      isValid = false;
+    }
+  } catch (e) {
+    isValid = false;
+  }
+  return isValid;
+};
+
+export const isRecoverAddressValid = (
+  signature: string,
+  hash: string,
+  publicAddress: string,
+): boolean => {
+  try {
+    const bufferText = Buffer.from(hash, 'utf8');
+    const data = `0x${bufferText.toString('hex')}`;
+    const address = recoverPersonalSignature({
+      data: data,
+      sig: '0x' + signature,
+    });
+    console.log('cosm public address is:::', address);
+    if (address.toLowerCase() == publicAddress.toLowerCase()) {
+      return true;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
 };
