@@ -5,11 +5,12 @@ export const BEARER = 'Bearer ';
 export const RANDOM_KEY =
   'AnanlJwzC/5MKcsT5nMr25zLrXIBx13byMYNKcXDp0ppI4Dn5YTQtU2WNp9PAKGi';
 export const CUDOS_CHAIN_ID = 'cudos-1';
+export const THRESHOLD = 360;
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0x6EBED6276033A33b6C6d60e515BF18E979976668',
-    fiberRouterAddress: '0xd66C6a8277B4E258b4B6023F5B4085af00AfA9bB',
+    fundManagerAddress: '0x00656E8fccF62aDb64e07A6bd0a967d97CaA0271',
+    fiberRouterAddress: '0x7721658936bf9A3c32286127C7Bd1927aa84b11E',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
@@ -20,8 +21,8 @@ export const NETWORKS = [
   },
   {
     chainId: '137',
-    fundManagerAddress: '0xe54B5835e8aba22D52BF892b23Bb491E0bB1b579',
-    fiberRouterAddress: '0x704D29c86fD1347446c5F30f80E77B31Dc67539f',
+    fundManagerAddress: '0xE13618Aba88D7AD4724198c765Bb65479E1c9354',
+    fiberRouterAddress: '0xE011d0B394902Ce9b481F50F858bE33B29FED1Fe',
     foundaryTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   {
