@@ -1,6 +1,5 @@
 export {};
 var cron = require('node-cron');
-import moment from 'moment';
 import {
   axiosService,
   web3Service,
@@ -18,7 +17,6 @@ let transactionsJob = async function () {
 async function start() {
   try {
     let task = cron.schedule('*/20 * * * * *', async () => {
-      console.log(moment().utc(), ':::');
       if (!isProccessRunning) {
         console.log('getTransaction cron triggered:::');
         triggerJobs();
@@ -76,15 +74,17 @@ async function workerForFetchChainDataFromNetwork(tx: any) {
 async function workerForSignatureVarification(job: any) {
   try {
     if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
-      if (cosmWasmService.validateSignature(job)) {
+      if (cosmWasmService.validateSignature(job) == false) {
         await updateTransaction(job);
       }
     } else {
+      console.log('isValid', web3Service.validateSignature(job));
       if (web3Service.validateSignature(job) == false) {
         await updateTransaction(job);
       }
     }
-    workerOnCompleted(job);
+    console.log('validation proccess is completed');
+    await workerOnCompleted(job);
     removeTransactionHashFromLocalList(job?.data?.txId);
   } catch (error) {
     console.error('error occured', error);
@@ -93,6 +93,7 @@ async function workerForSignatureVarification(job: any) {
 
 async function updateTransaction(job: any) {
   try {
+    console.log('error in validation yes');
     await axiosService.updateTransactionJobStatus(
       job?.data?.txId,
       {
@@ -121,7 +122,7 @@ function removeTransactionHashFromLocalList(hash: any) {
 
 function isHashInLocalList(hash: any): boolean {
   const found = localTransactionHashes?.find((item: any) => item == hash);
-  console.log(found);
+  console.log('isHashInLocalList', found);
   if (found) {
     return true;
   } else {

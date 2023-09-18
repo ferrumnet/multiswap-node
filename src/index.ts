@@ -5,7 +5,7 @@ import './worker';
 dotenv.config();
 
 (async () => {
-  transactionsJob();
+  // transactionsJob();
 })().catch(e => {
   console.log(e);
 });
