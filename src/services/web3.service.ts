@@ -7,6 +7,9 @@ import {
   NETWORKS,
   CUDOS_CHAIN_ID,
   THRESHOLD,
+  isAllowedPublicAddress,
+  isUniqueAddressesArray,
+  checkForNumberOfValidators,
 } from '../constants/constants';
 import { AbiItem } from 'web3-utils';
 import {
@@ -304,14 +307,31 @@ const getDestinationAmount = async (data: any) => {
 export const validateSignature = (job: any) => {
   let isValid = true;
   try {
-    let signatures = job?.transaction?.generatorSig?.signatures;
-    if (signatures?.length > 0) {
-      for (let index = 0; index < signatures.length; index++) {
-        let signature = signatures[index];
-        let sig = signature?.signature;
-        let hash = signature?.hash;
-        let address = signature?.address;
-        if (isRecoverAddressValid(sig, hash, address) == false) {
+    let validatorSigs = job?.transaction?.validatorSig;
+    if (
+      validatorSigs?.length > 0 &&
+      isUniqueAddressesArray(validatorSigs) &&
+      checkForNumberOfValidators(validatorSigs)
+    ) {
+      for (
+        let outerIndex = 0;
+        outerIndex < validatorSigs.length;
+        outerIndex++
+      ) {
+        let item = validatorSigs[outerIndex];
+        let address = item?.address;
+        let signatures = item?.signatures;
+
+        if (signatures?.length > 0) {
+          for (let index = 0; index < signatures.length; index++) {
+            let signature = signatures[index];
+            let sig = signature?.signature;
+            let hash = signature?.hash;
+            if (isRecoverAddressValid(sig, hash, address) == false) {
+              isValid = false;
+            }
+          }
+        } else {
           isValid = false;
         }
       }
@@ -335,8 +355,10 @@ export const isRecoverAddressValid = (
     const addrBuf = pubToAddress(pubKey);
     const address = bufferToHex(addrBuf);
     console.log('public address is:::', address);
-    if (address.toLowerCase() == publicAddress.toLowerCase()) {
-      return true;
+    if (address?.toLowerCase() == publicAddress?.toLowerCase()) {
+      if (isAllowedPublicAddress(address?.toLowerCase())) {
+        return true;
+      }
     }
   } catch (e) {
     console.log(e);
