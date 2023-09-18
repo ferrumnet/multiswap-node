@@ -6,6 +6,7 @@ export const RANDOM_KEY =
   'AnanlJwzC/5MKcsT5nMr25zLrXIBx13byMYNKcXDp0ppI4Dn5YTQtU2WNp9PAKGi';
 export const CUDOS_CHAIN_ID = 'cudos-1';
 export const THRESHOLD = 360;
+export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
 export const NETWORKS = [
   {
     chainId: '56',
@@ -44,3 +45,41 @@ export const NETWORKS = [
     foundaryTokenAddress: '0xea6b04272f9f62f997f666f07d3a974134f7ffb9',
   },
 ];
+export const isAllowedPublicAddress = function (nodeAddress: string): boolean {
+  let allowedAddress = process.env.ALLOWED_VALIDATOR_ADDRESS;
+  if (allowedAddress) {
+    let allowedAddressInArray = JSON.parse(
+      allowedAddress ? allowedAddress : '',
+    );
+    if (allowedAddressInArray?.length > 0) {
+      for (let index = 0; index < allowedAddressInArray.length; index++) {
+        let address = allowedAddressInArray[index];
+        if (nodeAddress?.toLowerCase() == address?.toLowerCase()) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
+export const isUniqueAddressesArray = function (arr: [any]): boolean {
+  var tmpArr = [];
+  if (arr?.length > 0) {
+    for (var obj in arr) {
+      if (tmpArr.indexOf(arr[obj]?.address?.toLowerCase()) < 0) {
+        tmpArr.push(arr[obj]?.address?.toLowerCase());
+      } else {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+export const checkForNumberOfValidators = function (arr: any): boolean {
+  if (arr?.length > 0 && arr?.length == NUMBER_OF_VALIDATORS_SHOULD_BE) {
+    return true;
+  }
+  return false;
+};
