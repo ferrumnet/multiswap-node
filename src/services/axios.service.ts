@@ -1,7 +1,11 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 var CryptoJS = require('crypto-js');
-import { BEARER, RANDOM_KEY } from '../constants/constants';
+import {
+  BEARER,
+  RANDOM_KEY,
+  createAuthTokenForMultiswapBackend,
+} from '../constants/constants';
 dotenv.config();
 
 export let getTransactions = async function () {
@@ -11,8 +15,13 @@ export let getTransactions = async function () {
     if (process.env.ENVIRONMENT == 'local') {
       baseUrl = 'http://localhost:8080';
     }
-    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&address=${process.env.PUBLIC_KEY}&isPagination=false&limit=1`;
-    let res = await axios.get(url);
+    let config = {
+      headers: {
+        Authorization: BEARER + createAuthTokenForMultiswapBackend(),
+      },
+    };
+    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&address=${process.env.PUBLIC_KEY}&isPagination=false&isFrom=master`;
+    let res = await axios.get(url, config);
     return res.data.body.transactions;
   } catch (error) {
     console.log(error);
@@ -28,7 +37,7 @@ export const updateTransactionJobStatus = async (
   const url = process.env.GATEWAY_BACKEND_URL;
   let config = {
     headers: {
-      Authorization: getGatewayBackendToken(),
+      Authorization: BEARER + createAuthTokenForMultiswapBackend(),
     },
   };
   return axios.put(
