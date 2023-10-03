@@ -1,3 +1,7 @@
+import moment from 'moment';
+var crypto = require('crypto');
+var CryptoJS = require('crypto-js');
+
 export const NAME = 'FERRUM_TOKEN_BRIDGE_POOL';
 export const VERSION = '000.004';
 export const CONTRACT_ADDRESS = '0x9aFe354fb34a6303a9b9C89fF43A509A5320ba2D';
@@ -82,4 +86,50 @@ export const checkForNumberOfValidators = function (arr: any): boolean {
     return true;
   }
   return false;
+};
+
+export const createAuthTokenForMultiswapBackend = function () {
+  let timelapse = 1;
+  let currentTime = new Date();
+  let startDateTime = moment(currentTime)
+    .subtract('minutes', timelapse)
+    .utc()
+    .format();
+  let endDateTime = moment(currentTime)
+    .add('minutes', timelapse)
+    .utc()
+    .format();
+  let randomKey = crypto.randomBytes(512).toString('hex');
+  let tokenBody: any = {};
+  tokenBody.startDateTime = startDateTime;
+  tokenBody.endDateTime = endDateTime;
+  tokenBody.randomKey = randomKey;
+
+  let strTokenBody = JSON.stringify(tokenBody);
+  let encryptedSessionToken = encrypt(
+    strTokenBody,
+    (global as any).AWS_ENVIRONMENT.API_KEY,
+  );
+  return encryptedSessionToken;
+};
+
+export const encrypt = function (data: string, key: String) {
+  try {
+    var ciphertext = CryptoJS.AES.encrypt(data, key).toString();
+    return ciphertext;
+  } catch (e) {
+    console.log(e);
+    return '';
+  }
+};
+
+export const decrypt = function (data: string, key: string) {
+  try {
+    var bytes = CryptoJS.AES.decrypt(data, key);
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
+  } catch (e) {
+    console.log('decrypt error', e);
+    return '';
+  }
 };
