@@ -1,3 +1,7 @@
+import moment from 'moment';
+var crypto = require('crypto');
+var CryptoJS = require('crypto-js');
+
 export const NAME = 'FERRUM_TOKEN_BRIDGE_POOL';
 export const VERSION = '000.004';
 export const CONTRACT_ADDRESS = '0x9aFe354fb34a6303a9b9C89fF43A509A5320ba2D';
@@ -22,8 +26,8 @@ export const NETWORKS = [
   },
   {
     chainId: '137',
-    fundManagerAddress: '0xE13618Aba88D7AD4724198c765Bb65479E1c9354',
-    fiberRouterAddress: '0xE011d0B394902Ce9b481F50F858bE33B29FED1Fe',
+    fundManagerAddress: '0xD1Fa7F32550a0008b187D7ee3284529338A4A3cF',
+    fiberRouterAddress: '0xb6Ca3Fee4AF23D86De7A53DF9BB9324A715CbA93',
     foundaryTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   {
@@ -82,4 +86,50 @@ export const checkForNumberOfValidators = function (arr: any): boolean {
     return true;
   }
   return false;
+};
+
+export const createAuthTokenForMultiswapBackend = function () {
+  let timelapse = 1;
+  let currentTime = new Date();
+  let startDateTime = moment(currentTime)
+    .subtract('minutes', timelapse)
+    .utc()
+    .format();
+  let endDateTime = moment(currentTime)
+    .add('minutes', timelapse)
+    .utc()
+    .format();
+  let randomKey = crypto.randomBytes(512).toString('hex');
+  let tokenBody: any = {};
+  tokenBody.startDateTime = startDateTime;
+  tokenBody.endDateTime = endDateTime;
+  tokenBody.randomKey = randomKey;
+
+  let strTokenBody = JSON.stringify(tokenBody);
+  let encryptedSessionToken = encrypt(
+    strTokenBody,
+    (global as any).AWS_ENVIRONMENT.API_KEY,
+  );
+  return encryptedSessionToken;
+};
+
+export const encrypt = function (data: string, key: String) {
+  try {
+    var ciphertext = CryptoJS.AES.encrypt(data, key).toString();
+    return ciphertext;
+  } catch (e) {
+    console.log(e);
+    return '';
+  }
+};
+
+export const decrypt = function (data: string, key: string) {
+  try {
+    var bytes = CryptoJS.AES.decrypt(data, key);
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
+  } catch (e) {
+    console.log('decrypt error', e);
+    return '';
+  }
 };
