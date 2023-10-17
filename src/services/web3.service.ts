@@ -10,6 +10,7 @@ import {
   isAllowedPublicAddress,
   isUniqueAddressesArray,
   checkForNumberOfValidators,
+  getPrivateKey,
 } from '../constants/constants';
 import { AbiItem } from 'web3-utils';
 import {
@@ -128,7 +129,7 @@ const createSignedPayment = (
     amount,
     salt,
   );
-  const privateKey = process.env.PRIVATE_KEY as string;
+  const privateKey = getPrivateKey();
   const ecSign = ecsign(
     Buffer.from(payBySig.hash.replace('0x', ''), 'hex'),
     Buffer.from(privateKey.replace('0x', ''), 'hex'),
