@@ -11,6 +11,15 @@ export const RANDOM_KEY =
 export const CUDOS_CHAIN_ID = 'cudos-1';
 export const THRESHOLD = 360;
 export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
+let SECURITY_KEY = '';
+
+export const getSecurityKey = function () {
+  return SECURITY_KEY;
+};
+
+export const setSecurityKey = function (securityKey: string) {
+  SECURITY_KEY = securityKey;
+};
 export const NETWORKS = [
   {
     chainId: '56',
@@ -111,6 +120,11 @@ export const createAuthTokenForMultiswapBackend = function () {
     (global as any).AWS_ENVIRONMENT.API_KEY,
   );
   return encryptedSessionToken;
+};
+
+export const getPrivateKey = function () {
+  const privateKey = process.env.PRIVATE_KEY as string;
+  return decrypt(privateKey, SECURITY_KEY);
 };
 
 export const encrypt = function (data: string, key: String) {
