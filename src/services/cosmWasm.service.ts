@@ -8,6 +8,7 @@ import {
   isAllowedPublicAddress,
   isUniqueAddressesArray,
   checkForNumberOfValidators,
+  getPrivateKey,
 } from '../constants/constants';
 import { recoverPersonalSignature } from 'eth-sig-util';
 
@@ -82,7 +83,7 @@ const createSignedPayment = async (
     salt,
   );
   console.log('hash', payBySig.hash);
-  const privateKey = process.env.PRIVATE_KEY as string;
+  const privateKey = getPrivateKey();
   let provider = ethers.getDefaultProvider(job.data.sourceRpcURL);
   const wallet = new Wallet(privateKey, provider);
   let signature = await wallet.signMessage(payBySig.hash);
