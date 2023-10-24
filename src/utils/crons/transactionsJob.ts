@@ -73,13 +73,30 @@ async function workerForFetchChainDataFromNetwork(tx: any) {
 
 async function workerForSignatureVarification(job: any) {
   try {
+    let decodedData;
+    let tx: any = {};
+
+    if (job.data.isSourceNonEVM != null && job.data.isSourceNonEVM) {
+      decodedData = cosmWasmService.getLogsFromTransactionReceipt(job);
+      tx.from = decodedData.from;
+      tx.hash = job.returnvalue.transactionHash;
+    } else {
+      decodedData = web3Service.getLogsFromTransactionReceipt(job);
+      tx = await web3Service.getTransactionByHash(
+        job.data.txId,
+        job.data.sourceRpcURL,
+      );
+    }
+    console.info('decodedData', decodedData);
+
     if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
-      if (cosmWasmService.validateSignature(job) == false) {
+      let sd = await cosmWasmService.signedTransaction(job, decodedData, tx);
+      if (cosmWasmService.validateSignature(job, sd.signatures) == false) {
         await updateTransaction(job);
       }
     } else {
-      console.log('isValid', web3Service.validateSignature(job));
-      if (web3Service.validateSignature(job) == false) {
+      let sd = await web3Service.signedTransaction(job, decodedData, tx);
+      if (web3Service.validateSignature(job, sd.signatures) == false) {
         await updateTransaction(job);
       }
     }
