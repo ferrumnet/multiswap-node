@@ -152,7 +152,7 @@ const getDestinationAmount = async (data: any) => {
   return data.bridgeAmount;
 };
 
-export const validateSignature = (job: any) => {
+export const validateSignature = (job: any, localSignatures: any) => {
   let isValid = true;
   try {
     let validatorSigs = job?.transaction?.validatorSig;
@@ -170,11 +170,12 @@ export const validateSignature = (job: any) => {
         let address = item?.address;
         let signatures = item?.signatures;
 
-        if (signatures?.length > 0) {
+        if (signatures?.length > 0 && localSignatures?.length > 0) {
           for (let index = 0; index < signatures.length; index++) {
             let signature = signatures[index];
+            let localSignature = localSignatures[index];
             let sig = signature?.signature;
-            let hash = signature?.hash;
+            let hash = localSignature?.hash;
             if (isRecoverAddressValid(sig, hash, address) == false) {
               isValid = false;
             }
