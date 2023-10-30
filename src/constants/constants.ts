@@ -27,8 +27,8 @@ export const NETWORKS = [
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0xcfddF60db000D49d0F2dafd7eDB08Fca177F1A1E',
-    fiberRouterAddress: '0x0d618f4632C135e05d9fD795bab021e7DD3187c4',
+    fundManagerAddress: '0xe68aEAe5B4d8e52229b73353021368eB91f961b2',
+    fiberRouterAddress: '0x6b39334092638C62297CdC6cf5f5F975430107E6',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
   {
