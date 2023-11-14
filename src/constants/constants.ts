@@ -9,8 +9,8 @@ export const THRESHOLD = 360;
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0x00656E8fccF62aDb64e07A6bd0a967d97CaA0271',
-    fiberRouterAddress: '0x7721658936bf9A3c32286127C7Bd1927aa84b11E',
+    fundManagerAddress: '0xEa3a04f27F1c588678956037ecdb9d5F1D70bDF5',
+    fiberRouterAddress: '0x2Aa647c231082a4998Bd1020D82Db6D2ff8F3AdD',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
@@ -27,8 +27,8 @@ export const NETWORKS = [
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0xcfddF60db000D49d0F2dafd7eDB08Fca177F1A1E',
-    fiberRouterAddress: '0x0d618f4632C135e05d9fD795bab021e7DD3187c4',
+    fundManagerAddress: '0xe68aEAe5B4d8e52229b73353021368eB91f961b2',
+    fiberRouterAddress: '0x6b39334092638C62297CdC6cf5f5F975430107E6',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
   {
