@@ -24,7 +24,7 @@ export const signedTransaction = async (
   transaction: any,
 ): Promise<any> => {
   try {
-    const destinationAmountToMachine = await getDestinationAmount(job.data);
+    const destinationAmountToMachine = await getDestinationAmount(decodedData);
     const txData = {
       transactionHash: job.returnvalue.transactionHash,
       from: transaction.from,
