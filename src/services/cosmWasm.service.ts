@@ -34,6 +34,7 @@ export const signedTransaction = async (
       targetChainId: decodedData.targetChainId,
       targetToken: decodedData.targetToken,
       targetAddress: decodedData.targetAddress,
+      swapBridgeAmount: destinationAmountToMachine,
       signatures: [],
       salt: '',
     };
