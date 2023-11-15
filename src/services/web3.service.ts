@@ -234,7 +234,7 @@ const findSwapEvent = (topics: any[], job: any) => {
   );
   if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
     swapEventHash = Web3.utils.sha3(
-      'NonEvmSwap(address,string,uint256,string,uint256,address,string)',
+      'NonEvmSwap(address,string,uint256,string,uint256,address,string,uint256)',
     );
   }
 
