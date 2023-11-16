@@ -46,7 +46,7 @@ export const signedTransaction = async (
 ): Promise<any> => {
   try {
     const web3 = new Web3(job.data.sourceRpcURL);
-    const destinationAmountToMachine = await getDestinationAmount(job.data);
+    const destinationAmountToMachine = await getDestinationAmount(decodedData);
     const txData = {
       transactionHash: job.returnvalue.transactionHash,
       from: transaction.from,
@@ -62,6 +62,7 @@ export const signedTransaction = async (
         decodedData.targetToken,
       ),
       targetAddress: decodedData.targetAddress,
+      swapBridgeAmount: destinationAmountToMachine,
       signatures: [],
       salt: '',
     };
@@ -229,11 +230,11 @@ export const getLogsFromTransactionReceipt = (job: any) => {
 
 const findSwapEvent = (topics: any[], job: any) => {
   let swapEventHash = Web3.utils.sha3(
-    'Swap(address,address,uint256,uint256,uint256,address,address)',
+    'Swap(address,address,uint256,uint256,uint256,address,address,uint256)',
   );
   if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
     swapEventHash = Web3.utils.sha3(
-      'NonEvmSwap(address,string,uint256,string,uint256,address,string)',
+      'NonEvmSwap(address,string,uint256,string,uint256,address,string,uint256)',
     );
   }
 
@@ -288,6 +289,6 @@ const getFoundaryTokenAddress = (
 };
 
 const getDestinationAmount = async (data: any) => {
-  console.log('data.bridgeAmount', data.bridgeAmount);
-  return data.bridgeAmount;
+  console.log('data.bridgeAmount', data.swapBridgeAmount);
+  return data.swapBridgeAmount;
 };
