@@ -9,31 +9,31 @@ export const THRESHOLD = 360;
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0xB0Ae40965F3Ee8Ff0CE9260750325c954120bc6E',
+    fundManagerAddress: '0xaF83e9729A11D4196373bA72e120157BEe1DF7C7',
     fiberRouterAddress: '0xbD7864c61D7b0505F42E27c4c6F588f5F744d7df',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
     chainId: '250',
-    fundManagerAddress: '0x0E49256c2671CbE528D6f90e2C9e0Fe1BD36C16A',
+    fundManagerAddress: '0x9Bf3317f5fF93FA8C324E13170116D703A8AD44C',
     fiberRouterAddress: '0x22351c33Fb509b66Ac1526B199635F69067536DA',
     foundaryTokenAddress: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   },
   {
     chainId: '137',
-    fundManagerAddress: '0xeE81377985ceD622C8439E38fce4Aaf36225d077',
+    fundManagerAddress: '0xbf8d54786Dac6CE0372Db2fBD2A25dBf75F1Bb93',
     fiberRouterAddress: '0x0aB407bB3F1AAca20639eF901fC231c886DcD018',
     foundaryTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0x0A516724939C35ce0e3dC4B7FcC8E49b567Fc827',
+    fundManagerAddress: '0xda255aC784396C1f87629c140D79fa14B25B9b6F',
     fiberRouterAddress: '0xc90Eb5153d4B75F2BAD6Ae583D0a865FD82a888B',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
   {
     chainId: '43114',
-    fundManagerAddress: '0x87B8909Ad9F6764BfAFb55DF696929d2E5157ABa',
+    fundManagerAddress: '0x07Fc6e6AC5F5fF61893ddD8c48824d407f6bFc26',
     fiberRouterAddress: '0xC12feC7503f3f30e7F4DBc26347CDfFc62529F3C',
     foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
   },
