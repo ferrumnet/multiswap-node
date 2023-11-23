@@ -6,7 +6,6 @@ export interface JobRequestBody {
   isSourceNonEVM: boolean;
   destinationRpcURL: string;
   isDestinationNonEVM: boolean;
-  bridgeAmount: string;
   txId: string;
 }
 

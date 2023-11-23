@@ -82,7 +82,7 @@ export const signedTransaction = async (
 
     const payBySig1 = createSignedPayment(
       txData.targetChainId,
-      txData.fiberRouterAddress,
+      txData.targetAddress,
       destinationAmountToMachine,
       txData.targetToken,
       txData.contractAddress,
