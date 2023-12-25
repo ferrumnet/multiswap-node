@@ -62,8 +62,8 @@ async function workerForFetchChainDataFromNetwork(tx: any) {
       isSourceNonEVM: sourceNetwork.isNonEVM,
       destinationRpcURL: destinationRpc,
       isDestinationNonEVM: destinationNetwork.isNonEVM,
-      bridgeAmount: tx.bridgeAmount,
       txId: tx.receiveTransactionId,
+      threshold: sourceNetwork.threshold,
     };
 
     let job: any = { data: data, transaction: tx };
