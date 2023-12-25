@@ -9,46 +9,36 @@ export const BEARER = 'Bearer ';
 export const RANDOM_KEY =
   'AnanlJwzC/5MKcsT5nMr25zLrXIBx13byMYNKcXDp0ppI4Dn5YTQtU2WNp9PAKGi';
 export const CUDOS_CHAIN_ID = 'cudos-1';
-export const THRESHOLD = 360;
 export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
-let SECURITY_KEY = '';
-
-export const getSecurityKey = function () {
-  return SECURITY_KEY;
-};
-
-export const setSecurityKey = function (securityKey: string) {
-  SECURITY_KEY = securityKey;
-};
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0x00656E8fccF62aDb64e07A6bd0a967d97CaA0271',
-    fiberRouterAddress: '0x7721658936bf9A3c32286127C7Bd1927aa84b11E',
+    fundManagerAddress: '0x6697fA48f7335F4D59655aA4910F517ec4109987',
+    fiberRouterAddress: '0x4826e896E39DC96A8504588D21e9D44750435e2D',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
     chainId: '250',
-    fundManagerAddress: '0x354CBFc2894d45a584a9Fd0223cf58495cE3cF7F',
-    fiberRouterAddress: '0xAA209557B51C28a8D050fB500e67498EB3d1d92b',
+    fundManagerAddress: '0x84e7D09522bC21DB1Ef6a6Ed4D49E8297249fec6',
+    fiberRouterAddress: '0x4EdD64681098b42D777EC3D9C5c3339F91e009a1',
     foundaryTokenAddress: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   },
   {
     chainId: '137',
-    fundManagerAddress: '0xD1Fa7F32550a0008b187D7ee3284529338A4A3cF',
-    fiberRouterAddress: '0xb6Ca3Fee4AF23D86De7A53DF9BB9324A715CbA93',
+    fundManagerAddress: '0x2e3531220bE6781bbDb1E5F67eEB89A0F7108B8A',
+    fiberRouterAddress: '0xda255aC784396C1f87629c140D79fa14B25B9b6F',
     foundaryTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0xcfddF60db000D49d0F2dafd7eDB08Fca177F1A1E',
-    fiberRouterAddress: '0x0d618f4632C135e05d9fD795bab021e7DD3187c4',
+    fundManagerAddress: '0x0726d77Af8dF099426117C4912AB5Cc6490c280e',
+    fiberRouterAddress: '0x55D97822F1F4e802250e6D2eF7770094572e571B',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
   {
     chainId: '43114',
-    fundManagerAddress: '0x81A536479Af0FE02Ec2aC6BB59Db305aa72a774f',
-    fiberRouterAddress: '0x066599eD3abB7Eaf517119d376254af13871e5B1',
+    fundManagerAddress: '0x9CdAe082309Fb2E5d76BeDAc15eE616d013C2c35',
+    fiberRouterAddress: '0x8ae54Cc66eb2Ad5258D3AAD9e838500670dBaEA8',
     foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
   },
   {
@@ -58,6 +48,7 @@ export const NETWORKS = [
     foundaryTokenAddress: '0xea6b04272f9f62f997f666f07d3a974134f7ffb9',
   },
 ];
+
 export const isAllowedPublicAddress = function (nodeAddress: string): boolean {
   let allowedAddress = process.env.ALLOWED_VALIDATOR_ADDRESS;
   if (allowedAddress) {
@@ -115,16 +106,15 @@ export const createAuthTokenForMultiswapBackend = function () {
   tokenBody.randomKey = randomKey;
 
   let strTokenBody = JSON.stringify(tokenBody);
-  let encryptedSessionToken = encrypt(
-    strTokenBody,
-    (global as any).AWS_ENVIRONMENT.API_KEY,
-  );
+  let apiKey = process.env.API_KEY as string;
+  let encryptedSessionToken = encrypt(strTokenBody, apiKey);
   return encryptedSessionToken;
 };
 
 export const getPrivateKey = function () {
   const privateKey = process.env.PRIVATE_KEY as string;
-  return decrypt(privateKey, SECURITY_KEY);
+  const securityKey = process.env.SECURITY_KEY as string;
+  return decrypt(privateKey, securityKey);
 };
 
 export const encrypt = function (data: string, key: String) {
@@ -146,4 +136,14 @@ export const decrypt = function (data: string, key: string) {
     console.log('decrypt error', e);
     return '';
   }
+};
+
+export const delay = function () {
+  return new Promise(resolve => {
+    setTimeout(resolve, 30000);
+  });
+};
+
+export const getThreshold = function (threshold: number) {
+  return threshold * 2;
 };
