@@ -9,17 +9,7 @@ export const BEARER = 'Bearer ';
 export const RANDOM_KEY =
   'AnanlJwzC/5MKcsT5nMr25zLrXIBx13byMYNKcXDp0ppI4Dn5YTQtU2WNp9PAKGi';
 export const CUDOS_CHAIN_ID = 'cudos-1';
-export const THRESHOLD = 360;
 export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
-let SECURITY_KEY = '';
-
-export const getSecurityKey = function () {
-  return SECURITY_KEY;
-};
-
-export const setSecurityKey = function (securityKey: string) {
-  SECURITY_KEY = securityKey;
-};
 export const NETWORKS = [
   {
     chainId: '56',
@@ -58,6 +48,7 @@ export const NETWORKS = [
     foundaryTokenAddress: '0xea6b04272f9f62f997f666f07d3a974134f7ffb9',
   },
 ];
+
 export const isAllowedPublicAddress = function (nodeAddress: string): boolean {
   let allowedAddress = process.env.ALLOWED_VALIDATOR_ADDRESS;
   if (allowedAddress) {
@@ -115,16 +106,15 @@ export const createAuthTokenForMultiswapBackend = function () {
   tokenBody.randomKey = randomKey;
 
   let strTokenBody = JSON.stringify(tokenBody);
-  let encryptedSessionToken = encrypt(
-    strTokenBody,
-    (global as any).AWS_ENVIRONMENT.API_KEY,
-  );
+  let apiKey = process.env.API_KEY as string;
+  let encryptedSessionToken = encrypt(strTokenBody, apiKey);
   return encryptedSessionToken;
 };
 
 export const getPrivateKey = function () {
   const privateKey = process.env.PRIVATE_KEY as string;
-  return decrypt(privateKey, SECURITY_KEY);
+  const securityKey = process.env.SECURITY_KEY as string;
+  return decrypt(privateKey, securityKey);
 };
 
 export const encrypt = function (data: string, key: String) {
@@ -146,4 +136,14 @@ export const decrypt = function (data: string, key: string) {
     console.log('decrypt error', e);
     return '';
   }
+};
+
+export const delay = function () {
+  return new Promise(resolve => {
+    setTimeout(resolve, 30000);
+  });
+};
+
+export const getThreshold = function (threshold: number) {
+  return threshold * 2;
 };

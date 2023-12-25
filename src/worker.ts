@@ -1,50 +1,5 @@
-import { Worker } from 'bullmq';
 import { web3Service, axiosService, cosmWasmService } from './services';
-
-const worker = new Worker(
-  process.env.QUEUE as string,
-  async job => {
-    if (job.data.isSourceNonEVM != null && job.data.isSourceNonEVM) {
-      console.log('isSourceNonEVM', true);
-      await cosmWasmService.getTransactionReceipt(
-        job.data.txId,
-        job.data.sourceRpcURL,
-      );
-    } else {
-      console.log('isSourceNonEVM', false);
-      await web3Service.getTransactionReceipt(
-        job.data.txId,
-        job.data.sourceRpcURL,
-      );
-    }
-  },
-  {
-    connection: {
-      host: process.env.REDIS_HOST as string,
-      port: Number(process.env.REDIS_PORT) as number,
-    },
-  },
-);
-worker.on('completed', async job => {
-  await workerOnCompleted(job);
-});
-
-worker.on('failed', async (job: any, err) => {
-  console.info(`${job.id} has failed with ${err.message}`);
-  const tx = await web3Service.getTransactionByHash(
-    job.data.txId,
-    job.data.sourceRpcURL,
-  );
-  axiosService.updateTransactionJobStatus(
-    tx.hash,
-    {
-      transaction: tx,
-      transactionReceipt: job?.returnvalue,
-    },
-    'master',
-  );
-});
-
+import { getThreshold } from '../src/constants/constants';
 export async function workerOnCompleted(job: any) {
   try {
     let decodedData;
@@ -65,6 +20,7 @@ export async function workerOnCompleted(job: any) {
         job.returnvalue = await web3Service.getTransactionReceipt(
           job.data.txId,
           job.data.sourceRpcURL,
+          getThreshold(job.data.threshold),
         );
       }
       decodedData = web3Service.getLogsFromTransactionReceipt(job);
@@ -99,5 +55,3 @@ export async function workerOnCompleted(job: any) {
     console.error('error occured', error);
   }
 }
-
-export default worker;

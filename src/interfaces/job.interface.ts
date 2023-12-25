@@ -7,6 +7,7 @@ export interface JobRequestBody {
   destinationRpcURL: string;
   isDestinationNonEVM: boolean;
   txId: string;
+  threshold: number;
 }
 
 export interface UpdateJobRequestBody {

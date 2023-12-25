@@ -60,7 +60,7 @@ export const signedTransaction = async (
 
     return {
       ...txData,
-      signatures: [payBySig.signatures, payBySig.signatures],
+      signatures: [payBySig.signatures],
       hash: 'payBySig.hash',
     };
   } catch (error) {
@@ -89,7 +89,7 @@ const createSignedPayment = async (
   const wallet = new Wallet(privateKey, provider);
   let signature = await wallet.signMessage(payBySig.hash);
   signature = signature.replace(/^0x/, '');
-  payBySig.signatures = [signature];
+  payBySig.signatures = signature;
   return payBySig;
 };
 
