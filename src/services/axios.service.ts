@@ -10,17 +10,13 @@ dotenv.config();
 
 export let getTransactions = async function () {
   try {
-    let baseUrl = (global as any as any).AWS_ENVIRONMENT
-      .BASE_URL_MULTISWAP_BACKEND;
-    if (process.env.ENVIRONMENT == 'local') {
-      baseUrl = 'http://localhost:8080';
-    }
+    let baseUrl = process.env.GATEWAY_BACKEND_URL;
     let config = {
       headers: {
         Authorization: BEARER + createAuthTokenForMultiswapBackend(),
       },
     };
-    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&address=${process.env.PUBLIC_KEY}&limit=20&isFrom=master`;
+    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&limit=20&nodeType=master`;
     let res = await axios.get(url, config);
     return res.data.body.transactions;
   } catch (error) {
@@ -29,38 +25,22 @@ export let getTransactions = async function () {
   }
 };
 
-export const updateTransactionJobStatus = async (
+export const updateTransaction = async (
   txHash: string,
   body: any,
-  isFrom: string,
+  isValidationFailed: boolean,
 ) => {
-  const url = process.env.GATEWAY_BACKEND_URL;
+  let baseUrl = process.env.GATEWAY_BACKEND_URL;
   let config = {
     headers: {
       Authorization: BEARER + createAuthTokenForMultiswapBackend(),
     },
   };
   return axios.put(
-    `${url}/api/v2/transactions/update/swap/and/withdraw/job/${txHash}?isFrom=${isFrom}`,
+    `${baseUrl}/api/v1/transactions/update/from/master/${txHash}?address=${
+      process.env.PUBLIC_KEY
+    }&isValidationFailed=${isValidationFailed ? true : ''}`,
     body,
     config,
   );
-};
-
-const getGatewayBackendToken = () => {
-  return BEARER + doEncryption();
-};
-
-const doEncryption = () => {
-  try {
-    const privateKey = process.env.PRIVATE_KEY as string;
-    const publicKey = process.env.PUBLIC_KEY
-      ? process.env.PUBLIC_KEY
-      : RANDOM_KEY;
-    var ciphertext = CryptoJS.AES.encrypt(publicKey, privateKey);
-    return ciphertext;
-  } catch (e) {
-    console.log(e);
-    return '';
-  }
 };
