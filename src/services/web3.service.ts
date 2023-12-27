@@ -1,15 +1,15 @@
 import Web3 from 'web3';
 import { TransactionReceipt, Transaction } from '../interfaces';
 import { NETWORKS, CUDOS_CHAIN_ID, delay } from '../constants/constants';
-import { transactionService, signatureService } from './index';
+import { transactionService, signatureService, rpcNodeService } from './index';
 
 export const getTransactionReceipt = async (
   txId: string,
-  rpcURL: string,
+  chainId: string,
   threshold: number,
   tries = 0,
 ): Promise<TransactionReceipt> => {
-  const web3 = new Web3(rpcURL);
+  const web3 = new Web3(rpcNodeService.getRpcNodeByChainId(chainId).url);
   const transaction: TransactionReceipt = await web3.eth.getTransactionReceipt(
     txId,
   );
@@ -18,7 +18,7 @@ export const getTransactionReceipt = async (
     tries += 1;
     if (!transaction || transaction === null || transaction.status === null) {
       await delay();
-      await getTransactionReceipt(txId, rpcURL, threshold, tries);
+      await getTransactionReceipt(txId, chainId, threshold, tries);
     }
   }
   return transaction;
@@ -26,9 +26,9 @@ export const getTransactionReceipt = async (
 
 export const getTransactionByHash = async (
   txHash: string,
-  rpcURL: string,
+  chainId: string,
 ): Promise<Transaction> => {
-  const web3 = new Web3(rpcURL);
+  const web3 = new Web3(rpcNodeService.getRpcNodeByChainId(chainId).url);
   return web3.eth.getTransaction(txHash);
 };
 
@@ -37,7 +37,9 @@ export const signedTransaction = async (
   hash: string,
 ): Promise<any> => {
   try {
-    const web3 = new Web3(job.data.sourceRpcURL);
+    const web3 = new Web3(
+      rpcNodeService.getRpcNodeByChainId(job.data.sourceChainId).url,
+    );
     let decodedData = job.signatureData;
     const destinationAmountToMachine = await getDestinationAmount(decodedData);
     let txData = await signatureService.getDataForSignature(job);
@@ -49,7 +51,7 @@ export const signedTransaction = async (
     const signature = signatureService.createSignedPayment(
       txData.targetChainId,
       txData.targetAddress,
-      destinationAmountToMachine,
+      txData.destinationAmountIn,
       txData.targetToken,
       txData.fundManagerContractAddress,
       txData.salt,

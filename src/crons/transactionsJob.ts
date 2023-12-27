@@ -1,6 +1,6 @@
 export {};
 var cron = require('node-cron');
-import { axiosService, transactionService } from './../../services/index';
+import { axiosService, transactionService } from '../services/index';
 let isProccessRunning = false;
 let localTransactionHashes: any = [];
 

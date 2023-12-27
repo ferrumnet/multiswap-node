@@ -1,5 +1,5 @@
 import { axiosService, web3Service, signatureService } from './index';
-import { removeTransactionHashFromLocalList } from '../utils/crons/transactionsJob';
+import { removeTransactionHashFromLocalList } from '../crons/transactionsJob';
 import { JobRequestBody, SignatureData } from '../interfaces/index';
 import { getThreshold } from '../constants/constants';
 
@@ -13,7 +13,6 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
 
     let data: JobRequestBody = {
       name: '',
-      sourceRpcURL: sourceRpc,
       isSourceNonEVM: sourceNetwork.isNonEVM,
       destinationRpcURL: destinationRpc,
       isDestinationNonEVM: destinationNetwork.isNonEVM,
@@ -28,6 +27,8 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       destinationOneInchData: tx.destinationOneInchData,
       expiry: tx.signatureExpiry,
       withdrawalData: tx.withdrawalData,
+      sourceChainId: sourceNetwork.chainId,
+      destinationChaibId: destinationNetwork.chainId,
     };
 
     let signatureData: SignatureData = {

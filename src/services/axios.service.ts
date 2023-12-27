@@ -16,7 +16,7 @@ export let getTransactions = async function () {
         Authorization: BEARER + createAuthTokenForMultiswapBackend(),
       },
     };
-    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&limit=20&nodeType=master`;
+    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&limit=20&nodeType=master&address=${process.env.PUBLIC_KEY}`;
     let res = await axios.get(url, config);
     return res.data.body.transactions;
   } catch (error) {
