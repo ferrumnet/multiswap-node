@@ -51,7 +51,7 @@ export const signedTransaction = async (
     const signature = signatureService.createSignedPayment(
       txData.targetChainId,
       txData.targetAddress,
-      destinationAmountToMachine,
+      txData.destinationAmountIn,
       txData.targetToken,
       txData.fundManagerContractAddress,
       txData.salt,
