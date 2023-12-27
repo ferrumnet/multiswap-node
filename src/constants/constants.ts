@@ -149,3 +149,11 @@ export const delay = function () {
 export const getThreshold = function (threshold: number) {
   return threshold * 2;
 };
+
+export const getRpcNodesData = function () {
+  let data = process.env.RPC_NODES;
+  if (data) {
+    data = JSON.parse(data ? data : '');
+  }
+  return data;
+};
