@@ -29,6 +29,7 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       withdrawalData: tx.withdrawalData,
       sourceChainId: sourceNetwork.chainId,
       destinationChaibId: destinationNetwork.chainId,
+      slippage: tx.slippage,
     };
 
     let signatureData: SignatureData = {
@@ -40,6 +41,7 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       targetToken: tx.destinationCabn.tokenContractAddress,
       targetAddress: tx.destinationWalletAddress,
       swapBridgeAmount: tx.sourceBridgeAmount,
+      settledAmount: tx.settledAmount,
     };
     let job: any = {
       data: data,

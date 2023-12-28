@@ -18,6 +18,7 @@ export interface JobRequestBody {
   withdrawalData: string;
   sourceChainId: string;
   destinationChaibId: string;
+  slippage: number;
 }
 
 export interface SignatureData {
@@ -29,6 +30,7 @@ export interface SignatureData {
   targetToken: string;
   targetAddress: string;
   swapBridgeAmount: string;
+  settledAmount: string;
 }
 
 export interface UpdateJobRequestBody {
