@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { transactionService, web3Service } from './index';
+import { transactionService, web3Service, rpcNodeService } from './index';
 import {
   NAME,
   VERSION,
@@ -22,10 +22,11 @@ import {
   pubToAddress,
   bufferToHex,
 } from 'ethereumjs-util';
+import { decimals, decimalsIntoNumber, withSlippage } from '../constants/utils';
 
-export const getDataForSignature = (job: any): any => {
+export const getDataForSignature = async (job: any): Promise<any> => {
   let decodedData = job.signatureData;
-  const withdrawalData = getValidWithdrawalData(job.data);
+  const withdrawalData = await getValidWithdrawalData(job.data, decodedData);
   const txData = {
     transactionHash: job.data.txId,
     from: decodedData.from,
@@ -57,7 +58,10 @@ export const getDataForSignature = (job: any): any => {
   return txData;
 };
 
-export const getValidWithdrawalData = (data: any): any => {
+export const getValidWithdrawalData = async (
+  data: any,
+  decodedData: any,
+): Promise<any> => {
   let latestHash = Web3.utils.keccak256(
     data.sourceOneInchData +
       data.destinationOneInchData +
@@ -68,7 +72,16 @@ export const getValidWithdrawalData = (data: any): any => {
   );
   console.log('latestHash', latestHash);
   console.log('withdrawlDataHash', data.withdrawalData);
-  if (latestHash == data.withdrawalData) {
+  if (
+    latestHash == data.withdrawalData &&
+    (await isValidSettledAmount(
+      data.slippage,
+      decodedData.sourceChainId,
+      decodedData.targetChainId,
+      data.destinationAmountIn,
+      decodedData.settledAmount,
+    ))
+  ) {
     return {
       sourceOneInchData: data.sourceOneInchData,
       destinationOneInchData: data.destinationOneInchData,
@@ -79,6 +92,43 @@ export const getValidWithdrawalData = (data: any): any => {
     };
   }
   return null;
+};
+
+export const isValidSettledAmount = async (
+  slippage: number,
+  sourceChainId: string,
+  destinationChainId: string,
+  destinationAmountIn: any,
+  settledAmount: any,
+): Promise<boolean> => {
+  console.log(
+    slippage,
+    sourceChainId,
+    destinationChainId,
+    destinationAmountIn,
+    settledAmount,
+  );
+  const sWeb3 = new Web3(rpcNodeService.getRpcNodeByChainId(sourceChainId).url);
+  const dWeb3 = new Web3(
+    rpcNodeService.getRpcNodeByChainId(destinationChainId).url,
+  );
+  let sDecimal = await decimals(
+    sWeb3,
+    web3Service.getFoundaryTokenAddress(sourceChainId),
+  );
+  let dDecimal = await decimals(
+    dWeb3,
+    web3Service.getFoundaryTokenAddress(destinationChainId),
+  );
+  settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
+  destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
+  let minValue = withSlippage(destinationAmountIn, slippage);
+  let maxValue = destinationAmountIn;
+  console.log(minValue, settledAmount, maxValue);
+  if (settledAmount >= minValue && settledAmount <= maxValue) {
+    return true;
+  }
+  return false;
 };
 
 export const createSignedPayment = (
