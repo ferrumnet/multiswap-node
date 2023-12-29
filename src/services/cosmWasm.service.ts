@@ -18,7 +18,6 @@ export const getTransactionReceipt = async (
 ): Promise<TransactionReceipt> => {
   let client = await SigningCosmWasmClient.connectWithSigner(rpcURL);
   let transaction = await client.getTx(txId);
-  console.log('transaction', transaction);
   if (!transaction || transaction === null) {
     await getTransactionReceipt(txId, rpcURL);
   }
@@ -83,7 +82,6 @@ const createSignedPayment = async (
     amount,
     salt,
   );
-  console.log('hash', payBySig.hash);
   const privateKey = getPrivateKey();
   let provider = ethers.getDefaultProvider(job.data.sourceRpcURL);
   const wallet = new Wallet(privateKey, provider);
@@ -154,7 +152,6 @@ export const filterLogsAndGetValue = (logs: any, key: string) => {
 };
 
 const getDestinationAmount = async (data: any) => {
-  console.log('data.bridgeAmount', data.swapBridgeAmount);
   return data.swapBridgeAmount;
 };
 
@@ -211,7 +208,6 @@ export const isRecoverAddressValid = (
       data: data,
       sig: '0x' + signature,
     });
-    console.log('cosm public address is:::', address);
     if (address?.toLowerCase() == publicAddress?.toLowerCase()) {
       if (isAllowedPublicAddress(address?.toLowerCase())) {
         return true;
