@@ -67,12 +67,10 @@ export async function verifySignatures(job: any) {
       if (
         (await signatureService.validateSignature(job, sd.signatures)) == false
       ) {
-        console.log('failed', 'yes');
         await updateTransaction(job.data.txId, null, true);
         return;
       }
     }
-    console.log('validation proccess is completed');
     await createWithdrawalSignature(job);
   } catch (error) {
     console.error('error occured', error);
@@ -92,7 +90,6 @@ export async function createWithdrawalSignature(job: any) {
     } else {
       signedData = await web3Service.signedTransaction(job, '');
     }
-    console.log('signedData', signedData);
     await updateTransaction(job.data.txId, signedData, false);
   } catch (error) {
     console.error('error occured', error);
@@ -123,7 +120,6 @@ export const getGeneratorHash = (tx: any): string => {
     let signatures = tx?.generatorSig?.signatures;
     if (signatures?.length > 0) {
       let signature = signatures[0];
-      console.log('signature.hash', signature.hash);
       return signature.hash;
     }
   } catch (e) {

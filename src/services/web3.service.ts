@@ -47,7 +47,6 @@ export const signedTransaction = async (
     txData.salt = Web3.utils.keccak256(
       signatureService.getDataForSalt(hash, txData),
     );
-    console.log(txData);
     const signature = signatureService.createSignedPayment(
       txData.targetChainId,
       txData.targetAddress,
@@ -100,6 +99,5 @@ export const getFoundaryTokenAddress = (targetChainId: string): string => {
 };
 
 const getDestinationAmount = async (data: any) => {
-  console.log('data.bridgeAmount', data.swapBridgeAmount);
   return data.swapBridgeAmount;
 };

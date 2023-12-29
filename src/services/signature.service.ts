@@ -70,8 +70,6 @@ export const getValidWithdrawalData = async (
       data.sourceAssetType +
       data.destinationAssetType,
   );
-  console.log('latestHash', latestHash);
-  console.log('withdrawlDataHash', data.withdrawalData);
   if (
     latestHash == data.withdrawalData &&
     (await isValidSettledAmount(
@@ -101,13 +99,6 @@ export const isValidSettledAmount = async (
   destinationAmountIn: any,
   settledAmount: any,
 ): Promise<boolean> => {
-  console.log(
-    slippage,
-    sourceChainId,
-    destinationChainId,
-    destinationAmountIn,
-    settledAmount,
-  );
   const sWeb3 = new Web3(rpcNodeService.getRpcNodeByChainId(sourceChainId).url);
   const dWeb3 = new Web3(
     rpcNodeService.getRpcNodeByChainId(destinationChainId).url,
@@ -122,10 +113,8 @@ export const isValidSettledAmount = async (
   );
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
-  let minValue = withSlippage(destinationAmountIn, slippage);
-  let maxValue = destinationAmountIn;
-  console.log(minValue, settledAmount, maxValue);
-  if (settledAmount >= minValue && settledAmount <= maxValue) {
+  console.log(settledAmount, destinationAmountIn);
+  if (settledAmount >= destinationAmountIn) {
     return true;
   }
   return false;
@@ -320,8 +309,6 @@ export const validateSignature = async (job: any, localSignatures: any) => {
             let localSignature = localSignatures[index];
             let sig = signature?.signature;
             let hash = localSignature?.hash;
-            console.log('local', hash);
-            console.log('hash', signature.hash);
             if (isRecoverAddressValid(sig, hash, address) == false) {
               isValid = false;
             }
@@ -349,7 +336,6 @@ export const isRecoverAddressValid = (
     const pubKey = ecrecover(toBuffer(hash), v, r, s);
     const addrBuf = pubToAddress(pubKey);
     const address = bufferToHex(addrBuf);
-    console.log('public address is:::', address);
     if (address?.toLowerCase() == publicAddress?.toLowerCase()) {
       if (isAllowedPublicAddress(address?.toLowerCase())) {
         return true;
