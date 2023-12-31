@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+const { Big } = require('big.js');
 import { transactionService, web3Service, rpcNodeService } from './index';
 import {
   NAME,
@@ -114,7 +115,7 @@ export const isValidSettledAmount = async (
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
   console.log(settledAmount, destinationAmountIn);
-  if (settledAmount >= destinationAmountIn) {
+  if (Big(settledAmount).gte(Big(destinationAmountIn))) {
     return true;
   }
   return false;

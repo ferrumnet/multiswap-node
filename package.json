@@ -4,9 +4,8 @@
   "description": "MultiSwap Node Cron",
   "main": "src/index.ts",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon build/index.js",
+    "start": "cross-env NODE_ENV=development nodemon && ts-node src/index.ts",
     "build": "rm -rf ./build && tsc",
-    "dev": "cross-env NODE_ENV=development nodemon && ts-node src/index.ts",
     "lint": "eslint .",
     "lint:fix": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "prettier": "prettier --check \"**/*.{js,ts}\"",

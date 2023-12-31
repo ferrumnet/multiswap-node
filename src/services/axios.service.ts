@@ -11,6 +11,9 @@ dotenv.config();
 export let getTransactions = async function () {
   try {
     let baseUrl = process.env.GATEWAY_BACKEND_URL;
+    if (process.env.ENVIRONMENT == 'local') {
+      baseUrl = 'http://localhost:8080';
+    }
     let config = {
       headers: {
         Authorization: BEARER + createAuthTokenForMultiswapBackend(),
@@ -31,6 +34,9 @@ export const updateTransaction = async (
   isValidationFailed: boolean,
 ) => {
   let baseUrl = process.env.GATEWAY_BACKEND_URL;
+  if (process.env.ENVIRONMENT == 'local') {
+    baseUrl = 'http://localhost:8080';
+  }
   let config = {
     headers: {
       Authorization: BEARER + createAuthTokenForMultiswapBackend(),

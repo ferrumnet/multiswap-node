@@ -1,9 +1,9 @@
 # Getting Started
 
-Node Version `v18.12.1`
+Node Version `v20.10.0`
 
 Run this command `cp .env.example .env` to create .env file
 
-Run `npm install` at the root of the repo
+Run `npm i` at the root of the repo
 
-Run `npm run dev` to run Server
+Run `npm run start` to run Server
