@@ -27,18 +27,24 @@ export const NETWORKS = [
   },
 ];
 
-export const isAllowedPublicAddress = function (nodeAddress: string): boolean {
-  let allowedAddress = process.env.ALLOWED_VALIDATOR_ADDRESS;
+const getAllowedPublicAddress = function (): [] {
+  let allowedAddress = process.env.ALLOWED_VALIDATOR_ADDRESSES;
   if (allowedAddress) {
-    let allowedAddressInArray = JSON.parse(
+    let allowedAddressInArray: [] = JSON.parse(
       allowedAddress ? allowedAddress : '',
     );
-    if (allowedAddressInArray?.length > 0) {
-      for (let index = 0; index < allowedAddressInArray.length; index++) {
-        let address = allowedAddressInArray[index];
-        if (nodeAddress?.toLowerCase() == address?.toLowerCase()) {
-          return true;
-        }
+    return allowedAddressInArray;
+  }
+  return [];
+};
+
+export const isAllowedPublicAddress = function (nodeAddress: string): boolean {
+  let allowedAddress = getAllowedPublicAddress();
+  if (allowedAddress && allowedAddress?.length > 0) {
+    for (let index = 0; index < allowedAddress.length; index++) {
+      let address: string = allowedAddress[index];
+      if (nodeAddress?.toLowerCase() == address?.toLowerCase()) {
+        return true;
       }
     }
   }
@@ -60,7 +66,7 @@ export const isUniqueAddressesArray = function (arr: [any]): boolean {
 };
 
 export const checkForNumberOfValidators = function (arr: any): boolean {
-  if (arr?.length > 0 && arr?.length == NUMBER_OF_VALIDATORS_SHOULD_BE) {
+  if (arr?.length > 0 && arr?.length == getAllowedPublicAddress().length) {
     return true;
   }
   return false;
