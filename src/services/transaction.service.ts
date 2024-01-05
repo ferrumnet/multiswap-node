@@ -34,11 +34,11 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
 
     let signatureData: SignatureData = {
       from: tx.sourceWalletAddress,
-      token: tx.sourceCabn.tokenContractAddress,
+      token: tx.sourceToken,
       amount: tx.sourceAmountInMachine,
       sourceChainId: sourceNetwork.chainId,
       targetChainId: destinationNetwork.chainId,
-      targetToken: tx.destinationCabn.tokenContractAddress,
+      targetToken: tx.targetToken,
       targetAddress: tx.destinationWalletAddress,
       swapBridgeAmount: tx.sourceBridgeAmount,
       settledAmount: tx.settledAmount,
