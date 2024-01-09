@@ -348,13 +348,43 @@ export const isRecoverAddressValid = (
   return false;
 };
 
-export const getDataForSalt = (hash: string, txData: any): string => {
+export const getDataForSalt = (
+  hash: string,
+  txData: any,
+  decodedData: any,
+): string => {
   try {
     if (!hash) {
-      return txData.transactionHash.toLocaleLowerCase();
+      return (
+        txData.transactionHash.toLocaleLowerCase() +
+        getDecodedLogsDataIntoString(decodedData)
+      );
     } else {
-      return txData.transactionHash.toLocaleLowerCase() + hash;
+      return (
+        txData.transactionHash.toLocaleLowerCase() +
+        getDecodedLogsDataIntoString(decodedData) +
+        hash
+      );
     }
+  } catch (e) {
+    console.log(e);
+  }
+  return '';
+};
+
+const getDecodedLogsDataIntoString = (decodedData: any): string => {
+  try {
+    return (
+      decodedData?.token +
+      decodedData?.targetToken +
+      decodedData?.sourceChainId +
+      decodedData?.targetChainId +
+      decodedData?.amount +
+      decodedData?.sourceAddress +
+      decodedData?.targetAddress +
+      decodedData?.settledAmount +
+      decodedData?.withdrawalData
+    );
   } catch (e) {
     console.log(e);
   }

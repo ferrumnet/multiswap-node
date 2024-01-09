@@ -39,9 +39,11 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       sourceChainId: sourceNetwork.chainId,
       targetChainId: destinationNetwork.chainId,
       targetToken: tx.targetToken,
+      sourceAddress: tx.sourceWalletAddress,
       targetAddress: tx.destinationWalletAddress,
       swapBridgeAmount: tx.sourceBridgeAmount,
       settledAmount: tx.settledAmount,
+      withdrawalData: tx.withdrawalData,
     };
     let job: any = {
       data: data,

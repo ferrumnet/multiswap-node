@@ -28,9 +28,11 @@ export interface SignatureData {
   sourceChainId: string;
   targetChainId: string;
   targetToken: string;
+  sourceAddress: string;
   targetAddress: string;
   swapBridgeAmount: string;
   settledAmount: string;
+  withdrawalData: string;
 }
 
 export interface UpdateJobRequestBody {
