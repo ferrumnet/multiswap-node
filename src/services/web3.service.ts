@@ -45,7 +45,7 @@ export const signedTransaction = async (
     let txData = await signatureService.getDataForSignature(job);
 
     txData.salt = Web3.utils.keccak256(
-      signatureService.getDataForSalt(hash, txData),
+      signatureService.getDataForSalt(hash, txData, decodedData),
     );
     const signature = signatureService.createSignedPayment(
       txData.targetChainId,
