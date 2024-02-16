@@ -1,35 +1,52 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-var CryptoJS = require("crypto-js");
-import { BEARER, RANDOM_KEY } from '../constants/constants';
+var CryptoJS = require('crypto-js');
+import {
+  BEARER,
+  RANDOM_KEY,
+  createAuthTokenForMultiswapBackend,
+} from '../constants/constants';
 dotenv.config();
 
-export const updateTransactionJobStatus = async (txHash: string, body: any) => {
-  const url = process.env.GATEWAY_BACKEND_URL;
+export let getTransactions = async function () {
+  try {
+    let baseUrl = process.env.GATEWAY_BACKEND_URL;
+    if (process.env.ENVIRONMENT == 'local') {
+      baseUrl = 'http://localhost:8080';
+    }
+    let config = {
+      headers: {
+        Authorization: BEARER + createAuthTokenForMultiswapBackend(),
+      },
+    };
+    let url = `${baseUrl}/api/v1/transactions/list?status=validatorSignatureCreated&limit=20&nodeType=master&address=${process.env.PUBLIC_KEY}`;
+    let res = await axios.get(url, config);
+    return res.data.body.transactions;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateTransaction = async (
+  txHash: string,
+  body: any,
+  isValidationFailed: boolean,
+) => {
+  let baseUrl = process.env.GATEWAY_BACKEND_URL;
+  if (process.env.ENVIRONMENT == 'local') {
+    baseUrl = 'http://localhost:8080';
+  }
   let config = {
     headers: {
-      Authorization: getGatewayBackendToken(),
-    }
+      Authorization: BEARER + createAuthTokenForMultiswapBackend(),
+    },
   };
   return axios.put(
-    `${url}/api/v1/transactions/update/swap/and/withdraw/job/${txHash}`,
+    `${baseUrl}/api/v1/transactions/update/from/master/${txHash}?address=${
+      process.env.PUBLIC_KEY
+    }&isValidationFailed=${isValidationFailed ? true : ''}`,
     body,
-    config
+    config,
   );
-};
-
-const getGatewayBackendToken = () => {
-  return BEARER + doEncryption();
-};
-
-const doEncryption = () => {
-  try {
-    const privateKey = process.env.PRIVATE_KEY as string;
-    const publicKey = process.env.PUBLIC_KEY ? process.env.PUBLIC_KEY : RANDOM_KEY;
-    var ciphertext = CryptoJS.AES.encrypt(publicKey, privateKey);
-    return ciphertext;
-  } catch (e) {
-    console.log(e);
-    return '';
-  }
 };

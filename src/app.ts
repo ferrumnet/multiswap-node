@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction, Application } from 'express';
-import routes from './routes';
+import response from './middlewares/response/responseAppender';
 
 const app: Application = express();
 
@@ -9,8 +9,12 @@ app.use(express.json());
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
 
-// v1 api routes
-app.use('/api', routes);
+// responseAppender
+async function responseAppender(req: any, res: any, next: any) {
+  await response(req, res, next);
+  next();
+}
+app.use(responseAppender);
 
 // send back a 404 error for any unknown api request
 app.use((req: Request, res: Response, next: NextFunction) => {
