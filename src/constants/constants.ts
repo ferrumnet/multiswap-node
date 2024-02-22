@@ -15,14 +15,14 @@ export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
 export const NETWORKS = [
   {
     chainId: '56',
-    fundManagerAddress: '0x985824b8623e523162122461e081721B4bCc778B',
-    fiberRouterAddress: '0x7FfD92b850c5660FB40BD5Efa4f24eb22665E4c4',
+    fundManagerAddress: '0xaD8E49Eaa711905A4e3c12A49e44485330982e0F',
+    fiberRouterAddress: '0xc56f2a1240f2aDfAc3c822D564260a524d059e0d',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0x985824b8623e523162122461e081721b4bcc778b',
-    fiberRouterAddress: '0x7FfD92b850c5660FB40BD5Efa4f24eb22665E4c4',
+    fundManagerAddress: '0x6609c1Fe3055BEF578437A40Bd9E4140771B71Db',
+    fiberRouterAddress: '0x5D85da8DE6179Bbd11e0dc362ED7C18973E24e13',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
 ];
