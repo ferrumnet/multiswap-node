@@ -15,20 +15,20 @@ export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
 export const NETWORKS = [
   {
     chainId: '1',
-    fundManagerAddress: '0x985824b8623e523162122461e081721b4bcc778b',
-    fiberRouterAddress: '0xc05117600673a83AEa4C326b6ea542E42D53426a',
+    fundManagerAddress: '0xbD9D99bb2A136a1936B87031c7A8102831855289',
+    fiberRouterAddress: '0x7A32c872619DFE0f07d04ef8EBEe77C5d0622c58',
     foundaryTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   },
   {
     chainId: '56',
-    fundManagerAddress: '0x6F6Fd99292911EB13cE92827742D5919941A4fb5',
-    fiberRouterAddress: '0xE8539d5493F6e7B6333e45897CfEaAA7C7c15A08',
+    fundManagerAddress: '0xbD9D99bb2A136a1936B87031c7A8102831855289',
+    fiberRouterAddress: '0x7A32c872619DFE0f07d04ef8EBEe77C5d0622c58',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0x5036c099df53323c2d6122dC9583adB906523ceC',
-    fiberRouterAddress: '0xF9fBc63A291798515B08198427165c58ebE69A91',
+    fundManagerAddress: '0xbD9D99bb2A136a1936B87031c7A8102831855289',
+    fiberRouterAddress: '0x7A32c872619DFE0f07d04ef8EBEe77C5d0622c58',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   },
 ];
