@@ -3,7 +3,14 @@ import { TransactionReceipt, Transaction } from '../interfaces';
 const { SigningCosmWasmClient } = require('@cosmjs/cosmwasm-stargate');
 import { Wallet, ethers } from 'ethers';
 // import ethers from 'ethers';
-import { CUDOS_CHAIN_ID } from '../constants/constants';
+import {
+  CUDOS_CHAIN_ID,
+  isAllowedPublicAddress,
+  isUniqueAddressesArray,
+  checkForNumberOfValidators,
+  getPrivateKey,
+} from '../constants/constants';
+import { recoverPersonalSignature } from 'eth-sig-util';
 
 export const getTransactionReceipt = async (
   txId: string,
@@ -11,7 +18,6 @@ export const getTransactionReceipt = async (
 ): Promise<TransactionReceipt> => {
   let client = await SigningCosmWasmClient.connectWithSigner(rpcURL);
   let transaction = await client.getTx(txId);
-  console.log('transaction', transaction);
   if (!transaction || transaction === null) {
     await getTransactionReceipt(txId, rpcURL);
   }
@@ -53,7 +59,7 @@ export const signedTransaction = async (
 
     return {
       ...txData,
-      signatures: [payBySig.signatures, payBySig.signatures],
+      signatures: [payBySig.signatures],
       hash: 'payBySig.hash',
     };
   } catch (error) {
@@ -76,13 +82,12 @@ const createSignedPayment = async (
     amount,
     salt,
   );
-  console.log('hash', payBySig.hash);
-  const privateKey = process.env.PRIVATE_KEY as string;
+  const privateKey = getPrivateKey();
   let provider = ethers.getDefaultProvider(job.data.sourceRpcURL);
   const wallet = new Wallet(privateKey, provider);
   let signature = await wallet.signMessage(payBySig.hash);
   signature = signature.replace(/^0x/, '');
-  payBySig.signatures = [signature];
+  payBySig.signatures = signature;
   return payBySig;
 };
 
@@ -147,6 +152,69 @@ export const filterLogsAndGetValue = (logs: any, key: string) => {
 };
 
 const getDestinationAmount = async (data: any) => {
-  console.log('data.bridgeAmount', data.swapBridgeAmount);
   return data.swapBridgeAmount;
+};
+
+export const validateSignature = (job: any, localSignatures: any) => {
+  let isValid = true;
+  try {
+    let validatorSigs = job?.transaction?.validatorSig;
+    if (
+      validatorSigs?.length > 0 &&
+      isUniqueAddressesArray(validatorSigs) &&
+      checkForNumberOfValidators(validatorSigs)
+    ) {
+      for (
+        let outerIndex = 0;
+        outerIndex < validatorSigs.length;
+        outerIndex++
+      ) {
+        let item = validatorSigs[outerIndex];
+        let address = item?.address;
+        let signatures = item?.signatures;
+
+        if (signatures?.length > 0 && localSignatures?.length > 0) {
+          for (let index = 0; index < signatures.length; index++) {
+            let signature = signatures[index];
+            let localSignature = localSignatures[index];
+            let sig = signature?.signature;
+            let hash = localSignature?.hash;
+            if (isRecoverAddressValid(sig, hash, address) == false) {
+              isValid = false;
+            }
+          }
+        } else {
+          isValid = false;
+        }
+      }
+    } else {
+      isValid = false;
+    }
+  } catch (e) {
+    isValid = false;
+  }
+  return isValid;
+};
+
+export const isRecoverAddressValid = (
+  signature: string,
+  hash: string,
+  publicAddress: string,
+): boolean => {
+  try {
+    const bufferText = Buffer.from(hash, 'utf8');
+    const data = `0x${bufferText.toString('hex')}`;
+    const address = recoverPersonalSignature({
+      data: data,
+      sig: '0x' + signature,
+    });
+    if (address?.toLowerCase() == publicAddress?.toLowerCase()) {
+      if (isAllowedPublicAddress(address?.toLowerCase())) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
 };

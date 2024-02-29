@@ -5,41 +5,16 @@
   "abi": [
     {
       "inputs": [
+        { "internalType": "address", "name": "_weth", "type": "address" },
         {
           "internalType": "address",
-          "name": "token",
+          "name": "_oneInchAggregatorRouter",
           "type": "address"
         },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "targetNetwork",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "targetToken",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "targetAddress",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        }
+        { "internalType": "address", "name": "_pool", "type": "address" }
       ],
-      "name": "nonEvmSwap",
-      "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "constructor"
     },
     {
       "anonymous": false,
@@ -89,123 +64,18 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "swapBridgeAmount",
+          "name": "settledAmount",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
         }
       ],
       "name": "NonEvmSwap",
       "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "swapRouter",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountCrossMin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address[]",
-          "name": "path",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "deadline",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetNetwork",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetToken",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetAddress",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "nonEvmSwapAndCross",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "swapRouter",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountCrossMin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetNetwork",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetToken",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "crossTargetAddress",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes",
-          "name": "_calldata",
-          "type": "bytes"
-        },
-        {
-          "internalType": "address",
-          "name": "fromToken",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "foundryToken",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "nonEvmSwapAndCrossOneInch",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "anonymous": false,
@@ -227,82 +97,6 @@
       "type": "event"
     },
     {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        },
-        {
-          "internalType": "contract AggregatorV3Interface",
-          "name": "_oracleAddress",
-          "type": "address"
-        }
-      ],
-      "name": "setOracle",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_pool",
-          "type": "address"
-        }
-      ],
-      "name": "setPool",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "targetNetwork",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "targetToken",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "targetAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "swap",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {
@@ -350,7 +144,19 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "swapBridgeAmount",
+          "name": "settledAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "gasAmount",
           "type": "uint256"
         }
       ],
@@ -358,128 +164,109 @@
       "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
           "internalType": "address",
           "name": "swapRouter",
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountCrossMin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address[]",
-          "name": "path",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "deadline",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "crossTargetNetwork",
-          "type": "uint256"
-        },
-        {
+          "indexed": true,
           "internalType": "address",
-          "name": "crossTargetToken",
+          "name": "to",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "crossTargetAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "swapAndCross",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "swapRouter",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountCrossMin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "crossTargetNetwork",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "crossTargetToken",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "crossTargetAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "swapBridgeAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "_calldata",
-          "type": "bytes"
-        },
-        {
+          "indexed": true,
           "internalType": "address",
           "name": "fromToken",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "foundryToken",
-          "type": "address"
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
         }
       ],
-      "name": "swapAndCrossOneInch",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "name": "SwapHandled",
+      "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
           "internalType": "address",
-          "name": "newOwner",
+          "name": "swapRouter",
           "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
         }
       ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "name": "UniswapV3SwapHandled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "swapRouter",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "fromToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnoSwapHandled",
+      "type": "event"
     },
     {
       "anonymous": false,
@@ -519,32 +306,280 @@
       "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
           "internalType": "address",
-          "name": "token",
+          "name": "to",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "payee",
-          "type": "address"
-        },
-        {
+          "indexed": false,
           "internalType": "uint256",
-          "name": "amount",
+          "name": "amountIn",
           "type": "uint256"
         },
         {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOutOneInch",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "foundryToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "targetToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "oneInchData",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
           "internalType": "bytes32",
           "name": "salt",
           "type": "bytes32"
         },
         {
+          "indexed": false,
           "internalType": "bytes",
           "name": "multiSignature",
           "type": "bytes"
         }
+      ],
+      "name": "WithdrawOneInch",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "WETH",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "gasWallet",
+      "outputs": [
+        { "internalType": "address payable", "name": "", "type": "address" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "name": "inventory",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "token", "type": "address" },
+        { "internalType": "uint256", "name": "amount", "type": "uint256" },
+        { "internalType": "string", "name": "targetNetwork", "type": "string" },
+        { "internalType": "string", "name": "targetToken", "type": "string" },
+        { "internalType": "string", "name": "targetAddress", "type": "string" },
+        {
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
+        }
+      ],
+      "name": "nonEvmSwap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "oneInchAggregatorRouter",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pool",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_gasWallet",
+          "type": "address"
+        }
+      ],
+      "name": "setGasWallet",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newRouterAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setOneInchAggregatorRouter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "_pool", "type": "address" }
+      ],
+      "name": "setPool",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "token", "type": "address" },
+        { "internalType": "uint256", "name": "amount", "type": "uint256" },
+        {
+          "internalType": "uint256",
+          "name": "targetNetwork",
+          "type": "uint256"
+        },
+        { "internalType": "address", "name": "targetToken", "type": "address" },
+        {
+          "internalType": "address",
+          "name": "targetAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
+        }
+      ],
+      "name": "swap",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+        { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+        {
+          "internalType": "uint256",
+          "name": "crossTargetNetwork",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "crossTargetToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "crossTargetAddress",
+          "type": "address"
+        },
+        { "internalType": "bytes", "name": "oneInchData", "type": "bytes" },
+        { "internalType": "address", "name": "fromToken", "type": "address" },
+        {
+          "internalType": "address",
+          "name": "foundryToken",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
+        }
+      ],
+      "name": "swapAndCrossOneInch",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+        {
+          "internalType": "uint256",
+          "name": "crossTargetNetwork",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "crossTargetToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "crossTargetAddress",
+          "type": "address"
+        },
+        { "internalType": "bytes", "name": "oneInchData", "type": "bytes" },
+        {
+          "internalType": "address",
+          "name": "foundryToken",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "withdrawalData",
+          "type": "bytes32"
+        },
+        { "internalType": "uint256", "name": "gasFee", "type": "uint256" }
+      ],
+      "name": "swapAndCrossOneInchETH",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "newOwner", "type": "address" }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "token", "type": "address" },
+        { "internalType": "address", "name": "payee", "type": "address" },
+        { "internalType": "uint256", "name": "amount", "type": "uint256" },
+        { "internalType": "bytes32", "name": "salt", "type": "bytes32" },
+        { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+        { "internalType": "bytes", "name": "multiSignature", "type": "bytes" }
       ],
       "name": "withdrawSigned",
       "outputs": [],
@@ -553,171 +588,23 @@
     },
     {
       "inputs": [
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "swapRouter",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountOutMin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address[]",
-          "name": "path",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "deadline",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "salt",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes",
-          "name": "multiSignature",
-          "type": "bytes"
-        }
-      ],
-      "name": "withdrawSignedAndSwap",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "swapRouter",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amountOutMin",
-          "type": "uint256"
-        },
+        { "internalType": "address payable", "name": "to", "type": "address" },
+        { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+        { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
         {
           "internalType": "address",
           "name": "foundryToken",
           "type": "address"
         },
-        {
-          "internalType": "address",
-          "name": "targetToken",
-          "type": "address"
-        },
-        {
-          "internalType": "bytes",
-          "name": "_calldata",
-          "type": "bytes"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "salt",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes",
-          "name": "multiSignature",
-          "type": "bytes"
-        }
+        { "internalType": "address", "name": "targetToken", "type": "address" },
+        { "internalType": "bytes", "name": "oneInchData", "type": "bytes" },
+        { "internalType": "bytes32", "name": "salt", "type": "bytes32" },
+        { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+        { "internalType": "bytes", "name": "multiSignature", "type": "bytes" }
       ],
       "name": "withdrawSignedAndSwapOneInch",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "stateMutability": "payable",
-      "type": "receive"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        }
-      ],
-      "name": "getFoundryTokenPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "pool",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "priceFeed",
-      "outputs": [
-        {
-          "internalType": "contract AggregatorV3Interface",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     }
   ],
