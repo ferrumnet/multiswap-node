@@ -15,7 +15,7 @@ export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
 export const NETWORKS = [
   {
     chainId: '1',
-    fundManagerAddress: '0xbD9D99bb2A136a1936B87031c7A8102831855289',
+    fundManagerAddress: '0x5eBeF0bD015e4fAfe64172Ae00b9bB46a05906a7',
     fiberRouterAddress: '0x7A32c872619DFE0f07d04ef8EBEe77C5d0622c58',
     foundaryTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   },
