@@ -18,30 +18,37 @@ export const NETWORKS = [
     fundManagerAddress: '0x5eBeF0bD015e4fAfe64172Ae00b9bB46a05906a7',
     fiberRouterAddress: '0x4B87Ab46B56990Aff03dAD1caFEb33e760879d97',
     foundaryTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    aggregateRouterContractAddress: '',
   },
   {
     chainId: '56',
-    fundManagerAddress: '0xBFE96b3524a5d31B803BA133844C002Beaa79373',
-    fiberRouterAddress: '0x4B87Ab46B56990Aff03dAD1caFEb33e760879d97',
+    fundManagerAddress: '0xB4A5D95BFEC6AFd359e05aA982718C11bF04a7Ff',
+    fiberRouterAddress: '0xbB1886FA834917716049094090387DEa0680BFFc',
     foundaryTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+    aggregateRouterContractAddress:
+      '0x111111125421ca6dc452d289314280a0f8842a65',
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0x4Ba81924a6D7DaF6Dba27783168E5b6345D6A896',
-    fiberRouterAddress: '0xb73A2a6cd7297844B1CbfcFfEb2884bEaf4C22B1',
+    fundManagerAddress: '0x2AB6D6c328978D0DCC5a9ac0BA04E45e358e3B9a',
+    fiberRouterAddress: '0x8d8559221D55338369C1B305A58eb86fdcE3B8b9',
     foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+    aggregateRouterContractAddress:
+      '0x111111125421ca6dc452d289314280a0f8842a65',
   },
   {
     chainId: '10',
     fundManagerAddress: '0x7655eE1bd794b0Fe4b9B4D477B0F5cCABD78137c',
     fiberRouterAddress: '0x6a34da798839964e14850F585187f3d28079a500',
     foundaryTokenAddress: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+    aggregateRouterContractAddress: '',
   },
   {
     chainId: '43114',
     fundManagerAddress: '0x41eFd89cbeaCeCdf72d3fD8321C53A69A132CC1a',
     fiberRouterAddress: '0x9cc84e262E3A2A6b8C257d493E3d3487495fb5a2',
     foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+    aggregateRouterContractAddress: '',
   },
 ];
 
