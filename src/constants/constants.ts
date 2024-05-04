@@ -50,6 +50,22 @@ export const NETWORKS = [
     foundaryTokenAddress: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
     aggregateRouterContractAddress: '',
   },
+  {
+    chainId: '8453',
+    fundManagerAddress: '0x1ab9e7689b9eD478aA65EE409aA7d3086d8c37cE',
+    fiberRouterAddress: '0x20e7d7150B5FCe330290aB4c23aC799046153c41',
+    foundaryTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    aggregateRouterContractAddress:
+      '0x111111125421ca6dc452d289314280a0f8842a65',
+  },
+  {
+    chainId: '324',
+    fundManagerAddress: '0x09a3078fdb233e3De911cFba3D49D6902d29E36F',
+    fiberRouterAddress: '0x60ACb601eaE3ec5F9BC7679F20128b07Fc703Dbd',
+    foundaryTokenAddress: '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4',
+    aggregateRouterContractAddress:
+      '0x6fd4383cb451173d5f9304f041c7bcbf27d561ff',
+  },
 ];
 
 const getAllowedPublicAddress = function (): [] {
