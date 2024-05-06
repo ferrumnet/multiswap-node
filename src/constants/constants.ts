@@ -2,7 +2,7 @@ import moment from 'moment';
 var crypto = require('crypto');
 var CryptoJS = require('crypto-js');
 
-export const NAME = 'FUND_MANAGER';
+export const NAME = 'CCTP_FUND_MANAGER';
 export const VERSION = '000.004';
 export const CONTRACT_ADDRESS = '0x9aFe354fb34a6303a9b9C89fF43A509A5320ba2D';
 export const BEARER = 'Bearer ';
@@ -30,11 +30,12 @@ export const NETWORKS = [
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0x2AB6D6c328978D0DCC5a9ac0BA04E45e358e3B9a',
-    fiberRouterAddress: '0x8d8559221D55338369C1B305A58eb86fdcE3B8b9',
-    foundaryTokenAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+    fundManagerAddress: '0x80944eeaec9634F02889ca7c165d3fc1A473AeCA',
+    fiberRouterAddress: '0xE6A7A9dD2C0F02D572F9BEbc875B98E013918522',
+    foundaryTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     aggregateRouterContractAddress:
       '0x111111125421ca6dc452d289314280a0f8842a65',
+    cctpFundManager: '0x5D414D40cEc9A9d81877FB8eeB218Cc577271941',
   },
   {
     chainId: '10',
@@ -52,11 +53,12 @@ export const NETWORKS = [
   },
   {
     chainId: '8453',
-    fundManagerAddress: '0x1ab9e7689b9eD478aA65EE409aA7d3086d8c37cE',
-    fiberRouterAddress: '0x20e7d7150B5FCe330290aB4c23aC799046153c41',
+    fundManagerAddress: '0xEd2cE4f32779249682B0CcA7b7eC3Fc8B19Be9B6',
+    fiberRouterAddress: '0x4408ea5C17dC6E610eb7327361297D094762f9B0',
     foundaryTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     aggregateRouterContractAddress:
       '0x111111125421ca6dc452d289314280a0f8842a65',
+    cctpFundManager: '0x8EcDf548e4daB7ecB611Ed39cA62ff36Ebc52d73',
   },
   {
     chainId: '324',

@@ -75,10 +75,14 @@ export const signedTransaction = async (
   }
 };
 
-export const getFundManagerAddress = (chainId: string) => {
+export const getFundManagerAddress = (chainId: string, isCCTP: boolean) => {
   if (NETWORKS && NETWORKS.length > 0) {
     let item = NETWORKS.find((item: any) => item.chainId === chainId);
-    return item ? item.fundManagerAddress : '';
+    if (isCCTP) {
+      return item ? item.cctpFundManager : '';
+    } else {
+      return item ? item.fundManagerAddress : '';
+    }
   }
   return '';
 };
