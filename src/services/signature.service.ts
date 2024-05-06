@@ -36,6 +36,7 @@ export const getDataForSignature = async (job: any): Promise<any> => {
     amount: decodedData.amount,
     fundManagerContractAddress: web3Service.getFundManagerAddress(
       decodedData.targetChainId,
+      job.data.isCCTP,
     ),
     fiberRouterAddress: web3Service.getFiberRouterAddress(
       decodedData.targetChainId,
@@ -188,6 +189,7 @@ export const produceFoundaryHash = (
   swapTxId: string,
   expiry: number,
 ): any => {
+  console.log(contractAddress, 'contractAddress');
   const methodHash = Web3.utils.keccak256(
     Web3.utils.utf8ToHex(
       'WithdrawSigned(address token,address payee,uint256 amount,bytes32 salt,uint256 expiry)',

@@ -19,6 +19,7 @@ export interface JobRequestBody {
   sourceChainId: string;
   destinationChaibId: string;
   slippage: number;
+  isCCTP: boolean;
 }
 
 export interface SignatureData {
