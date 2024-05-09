@@ -68,6 +68,14 @@ export const NETWORKS = [
     aggregateRouterContractAddress:
       '0x6fd4383cb451173d5f9304f041c7bcbf27d561ff',
   },
+  {
+    chainId: '534352',
+    fundManagerAddress: '0xb28d89D2B218ced7B64272CD61036F655c2573e4',
+    fiberRouterAddress: '0x35dA469ECbFFCBfaF8cAC31Fe0645B158e252Eb6',
+    foundaryTokenAddress: '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4',
+    aggregateRouterContractAddress:
+      '0x6131B5fae19EA4f9D964eAc0408E4408b66337b5',
+  },
 ];
 
 const getAllowedPublicAddress = function (): [] {
