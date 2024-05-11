@@ -31,6 +31,7 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       destinationChaibId: destinationNetwork.chainId,
       slippage: tx.slippage,
       isCCTP: tx?.isCCTP ? tx?.isCCTP : false,
+      distributedFee: tx?.distributedFee ? tx?.distributedFee : '0',
     };
 
     let signatureData: SignatureData = {
