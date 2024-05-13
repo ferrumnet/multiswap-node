@@ -30,12 +30,12 @@ export const NETWORKS = [
   },
   {
     chainId: '42161',
-    fundManagerAddress: '0xC7b23d5Da44f3d421aD27863788bEdcce4b34B0d',
-    fiberRouterAddress: '0x68902Ec3058fdBb37Ac3D832a62112d7764a08ed',
+    fundManagerAddress: '0x5dBF50235fdD9D4D5669E6e0B3Bef3655dEAffe7',
+    fiberRouterAddress: '0xaDE10E8522AeCadBBe02279c133Fc46E45f92194',
     foundaryTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     aggregateRouterContractAddress:
       '0x111111125421ca6dc452d289314280a0f8842a65',
-    cctpFundManager: '0x7bD02622F39E458D5d5eaAD51C304Cac064ACFf4',
+    cctpFundManager: '0x82496D3bDE9168dfeF6bc8dF0439B51790ff42DF',
   },
   {
     chainId: '10',
@@ -53,12 +53,12 @@ export const NETWORKS = [
   },
   {
     chainId: '8453',
-    fundManagerAddress: '0x7022a2dE2434AbA5985e87A84E93E5C9Cc3AB05F',
-    fiberRouterAddress: '0x84250F8d4617485C3D5f1d7b1bC8C624e5695A80',
+    fundManagerAddress: '0x1938b36110e4016c54647de123a07F4dB13026C7',
+    fiberRouterAddress: '0x851930502D363D75C4a0C0c8366ADc43980aA048',
     foundaryTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     aggregateRouterContractAddress:
       '0x111111125421ca6dc452d289314280a0f8842a65',
-    cctpFundManager: '0x7EA16f3a967db7133D50807e5Fb3ca5FBc4A3dD6',
+    cctpFundManager: '0x59C1CF95a57F63094637Af70008c55452fFD1b9f',
   },
   {
     chainId: '324',
