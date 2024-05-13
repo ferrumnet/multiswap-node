@@ -84,6 +84,7 @@ export const getValidWithdrawalData = async (
       decodedData.targetChainId,
       data.destinationAmountIn,
       decodedData.settledAmount,
+      data.distributedFee,
     ))
   ) {
     return {
@@ -104,6 +105,7 @@ export const isValidSettledAmount = async (
   destinationChainId: string,
   destinationAmountIn: any,
   settledAmount: any,
+  distributedFee: string,
 ): Promise<boolean> => {
   const sWeb3 = new Web3(rpcNodeService.getRpcNodeByChainId(sourceChainId).url);
   const dWeb3 = new Web3(
@@ -118,9 +120,11 @@ export const isValidSettledAmount = async (
     web3Service.getFoundaryTokenAddress(destinationChainId),
   );
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
+  distributedFee = decimalsIntoNumber(distributedFee, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
-  console.log(settledAmount, destinationAmountIn);
-  if (Big(settledAmount).gte(Big(destinationAmountIn))) {
+  let sdAmount = Big(settledAmount).add(Big(distributedFee));
+  console.log(settledAmount, destinationAmountIn, sdAmount?.toString());
+  if (sdAmount.gte(Big(destinationAmountIn))) {
     return true;
   }
   return false;
