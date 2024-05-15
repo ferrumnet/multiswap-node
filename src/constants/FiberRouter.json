@@ -365,6 +365,15 @@
       "type": "function"
     },
     {
+      "inputs": [
+        { "internalType": "uint256", "name": "cdPtr", "type": "uint256" }
+      ],
+      "name": "isCctp",
+      "outputs": [{ "internalType": "bool", "name": "cctp", "type": "bool" }],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "owner",
       "outputs": [{ "internalType": "address", "name": "", "type": "address" }],

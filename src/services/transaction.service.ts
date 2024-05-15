@@ -32,6 +32,7 @@ export async function prepareObjectsAndVerifySignatures(tx: any) {
       slippage: tx.slippage,
       isCCTP: tx?.isCCTP ? tx?.isCCTP : false,
       distributedFee: tx?.distributedFee ? tx?.distributedFee : '0',
+      minDestinationAmountIn: tx?.minDestinationAmountIn,
     };
 
     let signatureData: SignatureData = {
@@ -70,7 +71,8 @@ export async function verifySignatures(job: any) {
     }
     await createWithdrawalSignature(job);
   } catch (error) {
-    console.error('error occured', error);
+    console.error('verifySignatures error occured', error);
+    await updateTransaction(job.data.txId, null, true);
   }
 }
 
