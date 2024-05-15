@@ -23,7 +23,12 @@ import {
   pubToAddress,
   bufferToHex,
 } from 'ethereumjs-util';
-import { decimals, decimalsIntoNumber, withSlippage } from '../constants/utils';
+import {
+  decimals,
+  decimalsIntoNumber,
+  numberIntoDecimals,
+  withSlippage,
+} from '../constants/utils';
 import { getAggregateRouterTokenAddress } from './web3.service';
 
 export const getDataForSignature = async (job: any): Promise<any> => {
@@ -71,26 +76,26 @@ export const getValidWithdrawalData = async (
   let latestHash = Web3.utils.keccak256(
     data.sourceOneInchData +
       data.destinationOneInchData +
-      data.destinationAmountIn +
+      data.minDestinationAmountIn +
       data.destinationAmountOut +
       data.sourceAssetType +
       data.destinationAssetType,
   );
-  if (
-    latestHash == data.withdrawalData &&
-    (await isValidSettledAmount(
-      data.slippage,
-      decodedData.sourceChainId,
-      decodedData.targetChainId,
-      data.destinationAmountIn,
-      decodedData.settledAmount,
-      data.distributedFee,
-    ))
-  ) {
+  const { isValid, destinationAmountIn } = await isValidSettledAmount(
+    data.slippage,
+    decodedData.sourceChainId,
+    decodedData.targetChainId,
+    data.destinationAmountIn,
+    data.minDestinationAmountIn,
+    decodedData.settledAmount,
+    data.distributedFee,
+  );
+  console.log({ isValid, destinationAmountIn });
+  if (latestHash == data.withdrawalData && isValid) {
     return {
       sourceOneInchData: data.sourceOneInchData,
       destinationOneInchData: data.destinationOneInchData,
-      destinationAmountIn: data.destinationAmountIn,
+      destinationAmountIn: destinationAmountIn,
       destinationAmountOut: data.destinationAmountOut,
       sourceAssetType: data.sourceAssetType,
       destinationAssetType: data.destinationAssetType,
@@ -104,9 +109,10 @@ export const isValidSettledAmount = async (
   sourceChainId: string,
   destinationChainId: string,
   destinationAmountIn: any,
+  minDestinationAmountIn: any,
   settledAmount: any,
   distributedFee: string,
-): Promise<boolean> => {
+): Promise<any> => {
   const sWeb3 = new Web3(rpcNodeService.getRpcNodeByChainId(sourceChainId).url);
   const dWeb3 = new Web3(
     rpcNodeService.getRpcNodeByChainId(destinationChainId).url,
@@ -122,12 +128,22 @@ export const isValidSettledAmount = async (
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
   distributedFee = decimalsIntoNumber(distributedFee, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
+  minDestinationAmountIn = decimalsIntoNumber(minDestinationAmountIn, dDecimal);
   let sdAmount = Big(settledAmount).add(Big(distributedFee));
-  console.log(settledAmount, destinationAmountIn, sdAmount?.toString());
-  if (sdAmount.gte(Big(destinationAmountIn))) {
-    return true;
+  console.log(
+    settledAmount,
+    minDestinationAmountIn,
+    sdAmount?.toString(),
+    destinationAmountIn,
+  );
+  if (
+    sdAmount.gte(Big(minDestinationAmountIn)) &&
+    Big(destinationAmountIn).eq(Big(settledAmount))
+  ) {
+    destinationAmountIn = numberIntoDecimals(settledAmount, dDecimal);
+    return { isValid: true, destinationAmountIn };
   }
-  return false;
+  return { isValid: false, destinationAmountIn };
 };
 
 export const createSignedPayment = (
@@ -237,7 +253,7 @@ export const produceOneInchHash = (
 ): any => {
   const methodHash = Web3.utils.keccak256(
     Web3.utils.utf8ToHex(
-      'withdrawSignedAndSwapRouter(address to,uint256 amountIn,uint256 minAmountOut,address foundryToken,address targetToken,address router,bytes32 routerCalldata,bytes32 salt,uint256 expiry)',
+      'withdrawSignedAndSwapRouter(address to,uint256 amountIn,uint256 minAmountOut,address foundryToken,address targetToken,address router,bytes32 salt,uint256 expiry)',
     ),
   );
   const params = [
@@ -249,7 +265,6 @@ export const produceOneInchHash = (
     'address',
     'address',
     'bytes32',
-    'bytes32',
     'uint256',
   ];
   const structure = web3.eth.abi.encodeParameters(params, [
@@ -260,7 +275,6 @@ export const produceOneInchHash = (
     foundryToken,
     targetToken,
     aggregateRouterContractAddress,
-    Web3.utils.keccak256(routerCalldata),
     salt,
     expiry,
   ]);

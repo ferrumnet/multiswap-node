@@ -21,6 +21,7 @@ export interface JobRequestBody {
   slippage: number;
   isCCTP: boolean;
   distributedFee: string;
+  minDestinationAmountIn: string;
 }
 
 export interface SignatureData {
