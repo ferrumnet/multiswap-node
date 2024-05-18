@@ -138,7 +138,9 @@ export const isValidSettledAmount = async (
   );
   if (
     sdAmount.gte(Big(minDestinationAmountIn)) &&
-    Big(destinationAmountIn).eq(Big(settledAmount))
+    Big(destinationAmountIn).eq(
+      Big(decimalsIntoNumber(settledAmount, dDecimal)),
+    )
   ) {
     destinationAmountIn = numberIntoDecimals(settledAmount, dDecimal);
     return { isValid: true, destinationAmountIn };
