@@ -125,6 +125,7 @@ export const isValidSettledAmount = async (
     dWeb3,
     web3Service.getFoundaryTokenAddress(destinationChainId),
   );
+  let settledAmountInDesDeciamls = decimalsIntoNumber(settledAmount, dDecimal);
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
   distributedFee = decimalsIntoNumber(distributedFee, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
@@ -135,12 +136,11 @@ export const isValidSettledAmount = async (
     minDestinationAmountIn,
     sdAmount?.toString(),
     destinationAmountIn,
+    settledAmountInDesDeciamls,
   );
   if (
     sdAmount.gte(Big(minDestinationAmountIn)) &&
-    Big(destinationAmountIn).eq(
-      Big(decimalsIntoNumber(settledAmount, dDecimal)),
-    )
+    Big(destinationAmountIn).eq(Big(settledAmountInDesDeciamls))
   ) {
     destinationAmountIn = numberIntoDecimals(settledAmount, dDecimal);
     return { isValid: true, destinationAmountIn };
