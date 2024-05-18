@@ -27,6 +27,7 @@ import {
   decimals,
   decimalsIntoNumber,
   numberIntoDecimals,
+  removeDecimals,
   withSlippage,
 } from '../constants/utils';
 import { getAggregateRouterTokenAddress } from './web3.service';
@@ -126,6 +127,7 @@ export const isValidSettledAmount = async (
     web3Service.getFoundaryTokenAddress(destinationChainId),
   );
   let settledAmountInDesDeciamls = decimalsIntoNumber(settledAmount, dDecimal);
+  settledAmountInDesDeciamls = removeDecimals(settledAmountInDesDeciamls);
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
   distributedFee = decimalsIntoNumber(distributedFee, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);

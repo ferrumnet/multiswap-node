@@ -68,7 +68,7 @@ export const numberIntoDecimals = function (amount: any, decimal: any) {
   decimal = Big(10 ** Number(decimal));
   let formattedValue = amount.mul(decimal);
   formattedValue = removeExponential(formattedValue.toString());
-  formattedValue = parseInt(formattedValue);
+  formattedValue = removeDecimals(formattedValue);
   formattedValue = removeExponential(formattedValue.toString());
   return formattedValue;
 };
@@ -78,6 +78,13 @@ export const decimalsIntoNumber = function (amount: any, decimal: any) {
   let formattedValue = ethers.utils.formatUnits(bigNumberValue, decimal);
   formattedValue = removeExponential(formattedValue.toString());
   return formattedValue;
+};
+
+export const removeDecimals = function (amount: any) {
+  if (amount.includes('.')) {
+    amount = amount.split('.')[0];
+  }
+  return amount;
 };
 
 export const withSlippage = function (value: any, slippage: number) {
