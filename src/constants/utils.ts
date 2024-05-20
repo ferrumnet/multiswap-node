@@ -68,7 +68,9 @@ export const numberIntoDecimals = function (amount: any, decimal: any) {
   decimal = Big(10 ** Number(decimal));
   let formattedValue = amount.mul(decimal);
   formattedValue = removeExponential(formattedValue.toString());
-  formattedValue = parseInt(formattedValue);
+  if (formattedValue.includes('.')) {
+    formattedValue = formattedValue.split('.')[0];
+  }
   formattedValue = removeExponential(formattedValue.toString());
   return formattedValue;
 };
