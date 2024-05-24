@@ -23,7 +23,13 @@ import {
   pubToAddress,
   bufferToHex,
 } from 'ethereumjs-util';
-import { decimals, decimalsIntoNumber, withSlippage } from '../constants/utils';
+import {
+  decimals,
+  decimalsIntoNumber,
+  numberIntoDecimals,
+  withSlippage,
+} from '../constants/utils';
+import { getAggregateRouterTokenAddress } from './web3.service';
 
 export const getDataForSignature = async (job: any): Promise<any> => {
   let decodedData = job.signatureData;
@@ -35,6 +41,7 @@ export const getDataForSignature = async (job: any): Promise<any> => {
     amount: decodedData.amount,
     fundManagerContractAddress: web3Service.getFundManagerAddress(
       decodedData.targetChainId,
+      job.data.isCCTP,
     ),
     fiberRouterAddress: web3Service.getFiberRouterAddress(
       decodedData.targetChainId,
@@ -55,6 +62,9 @@ export const getDataForSignature = async (job: any): Promise<any> => {
     sourceOneInchData: withdrawalData?.sourceOneInchData,
     destinationOneInchData: withdrawalData?.destinationOneInchData,
     expiry: job.data.expiry,
+    aggregateRouterContractAddress: getAggregateRouterTokenAddress(
+      decodedData.targetChainId,
+    ),
   };
   return txData;
 };
@@ -66,25 +76,26 @@ export const getValidWithdrawalData = async (
   let latestHash = Web3.utils.keccak256(
     data.sourceOneInchData +
       data.destinationOneInchData +
-      data.destinationAmountIn +
+      data.minDestinationAmountIn +
       data.destinationAmountOut +
       data.sourceAssetType +
       data.destinationAssetType,
   );
-  if (
-    latestHash == data.withdrawalData &&
-    (await isValidSettledAmount(
-      data.slippage,
-      decodedData.sourceChainId,
-      decodedData.targetChainId,
-      data.destinationAmountIn,
-      decodedData.settledAmount,
-    ))
-  ) {
+  const { isValid, destinationAmountIn } = await isValidSettledAmount(
+    data.slippage,
+    decodedData.sourceChainId,
+    decodedData.targetChainId,
+    data.destinationAmountIn,
+    data.minDestinationAmountIn,
+    decodedData.settledAmount,
+    data.distributedFee,
+  );
+  console.log({ isValid, destinationAmountIn });
+  if (latestHash == data.withdrawalData && isValid) {
     return {
       sourceOneInchData: data.sourceOneInchData,
       destinationOneInchData: data.destinationOneInchData,
-      destinationAmountIn: data.destinationAmountIn,
+      destinationAmountIn: destinationAmountIn,
       destinationAmountOut: data.destinationAmountOut,
       sourceAssetType: data.sourceAssetType,
       destinationAssetType: data.destinationAssetType,
@@ -98,8 +109,10 @@ export const isValidSettledAmount = async (
   sourceChainId: string,
   destinationChainId: string,
   destinationAmountIn: any,
+  minDestinationAmountIn: any,
   settledAmount: any,
-): Promise<boolean> => {
+  distributedFee: string,
+): Promise<any> => {
   const sWeb3 = new Web3(rpcNodeService.getRpcNodeByChainId(sourceChainId).url);
   const dWeb3 = new Web3(
     rpcNodeService.getRpcNodeByChainId(destinationChainId).url,
@@ -113,12 +126,21 @@ export const isValidSettledAmount = async (
     web3Service.getFoundaryTokenAddress(destinationChainId),
   );
   settledAmount = decimalsIntoNumber(settledAmount, sDecimal);
+  distributedFee = decimalsIntoNumber(distributedFee, sDecimal);
   destinationAmountIn = decimalsIntoNumber(destinationAmountIn, dDecimal);
-  console.log(settledAmount, destinationAmountIn);
-  if (Big(settledAmount).gte(Big(destinationAmountIn))) {
-    return true;
+  minDestinationAmountIn = decimalsIntoNumber(minDestinationAmountIn, dDecimal);
+  let sdAmount = Big(settledAmount).add(Big(distributedFee));
+  console.log(
+    settledAmount,
+    minDestinationAmountIn,
+    sdAmount?.toString(),
+    destinationAmountIn,
+  );
+  if (sdAmount.gte(Big(minDestinationAmountIn))) {
+    destinationAmountIn = numberIntoDecimals(settledAmount, dDecimal);
+    return { isValid: true, destinationAmountIn };
   }
-  return false;
+  return { isValid: false, destinationAmountIn };
 };
 
 export const createSignedPayment = (
@@ -132,9 +154,10 @@ export const createSignedPayment = (
   amountIn: string,
   amountOut: string,
   targetFoundaryToken: string,
-  oneInchData: string,
+  routerCalldata: string,
   expiry: number,
   web3: Web3,
+  aggregateRouterContractAddress: string,
 ) => {
   let hash;
   if (destinationAssetType == FOUNDARY) {
@@ -158,9 +181,10 @@ export const createSignedPayment = (
       amountOut,
       targetFoundaryToken,
       targetToken,
-      oneInchData,
+      routerCalldata,
       salt,
       expiry,
+      aggregateRouterContractAddress,
     );
   }
   const privateKey = getPrivateKey();
@@ -182,6 +206,7 @@ export const produceFoundaryHash = (
   swapTxId: string,
   expiry: number,
 ): any => {
+  console.log(contractAddress, 'contractAddress');
   const methodHash = Web3.utils.keccak256(
     Web3.utils.utf8ToHex(
       'WithdrawSigned(address token,address payee,uint256 amount,bytes32 salt,uint256 expiry)',
@@ -218,13 +243,14 @@ export const produceOneInchHash = (
   amountOut: string,
   foundryToken: string,
   targetToken: string,
-  oneInchData: string,
+  routerCalldata: string,
   salt: string,
   expiry: number,
+  aggregateRouterContractAddress: string,
 ): any => {
   const methodHash = Web3.utils.keccak256(
     Web3.utils.utf8ToHex(
-      'WithdrawSignedOneInch(address to,uint256 amountIn,uint256 amountOut,address foundryToken,address targetToken,bytes oneInchData,bytes32 salt,uint256 expiry)',
+      'withdrawSignedAndSwapRouter(address to,uint256 amountIn,uint256 minAmountOut,address foundryToken,address targetToken,address router,bytes32 salt,uint256 expiry)',
     ),
   );
   const params = [
@@ -234,7 +260,7 @@ export const produceOneInchHash = (
     'uint256',
     'address',
     'address',
-    'bytes',
+    'address',
     'bytes32',
     'uint256',
   ];
@@ -245,7 +271,7 @@ export const produceOneInchHash = (
     amountOut,
     foundryToken,
     targetToken,
-    oneInchData,
+    aggregateRouterContractAddress,
     salt,
     expiry,
   ]);

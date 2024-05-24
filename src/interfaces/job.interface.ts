@@ -19,6 +19,9 @@ export interface JobRequestBody {
   sourceChainId: string;
   destinationChaibId: string;
   slippage: number;
+  isCCTP: boolean;
+  distributedFee: string;
+  minDestinationAmountIn: string;
 }
 
 export interface SignatureData {

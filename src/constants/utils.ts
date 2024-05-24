@@ -64,7 +64,13 @@ export const removeExponential = function (n: any) {
 };
 
 export const numberIntoDecimals = function (amount: any, decimal: any) {
-  let formattedValue = ethers.utils.parseUnits(amount.toString(), decimal);
+  amount = Big(amount);
+  decimal = Big(10 ** Number(decimal));
+  let formattedValue = amount.mul(decimal);
+  formattedValue = removeExponential(formattedValue.toString());
+  if (formattedValue.includes('.')) {
+    formattedValue = formattedValue.split('.')[0];
+  }
   formattedValue = removeExponential(formattedValue.toString());
   return formattedValue;
 };
