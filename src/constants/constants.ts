@@ -15,10 +15,12 @@ export const NUMBER_OF_VALIDATORS_SHOULD_BE = 1;
 export const NETWORKS = [
   {
     chainId: '1',
-    fundManagerAddress: '0x5eBeF0bD015e4fAfe64172Ae00b9bB46a05906a7',
-    fiberRouterAddress: '0x4B87Ab46B56990Aff03dAD1caFEb33e760879d97',
+    fundManagerAddress: '0x47Bee1648Eb4B375E27038314738455419B3766b',
+    fiberRouterAddress: '0x62237524Eb3a8971453DFbc26849BF58C832DBe9',
     foundaryTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    aggregateRouterContractAddress: '',
+    aggregateRouterContractAddress:
+      '0x111111125421ca6dc452d289314280a0f8842a65',
+    cctpFundManager: '0xD60cf5614671B01C3f80959E4FACD788598FD564',
   },
   {
     chainId: '56',
